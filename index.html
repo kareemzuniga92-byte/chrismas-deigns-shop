@@ -57,8 +57,9 @@ button{font-family:inherit}
 .lcard .sub{color:var(--muted);margin:6px 0 22px}
 .field{text-align:left;margin-bottom:14px}
 .field label{display:block;font-weight:700;font-size:.9rem;margin-bottom:5px}
-.field input{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;font:1rem var(--sans);background:#fff}
-.field input:focus{border-color:var(--pine);outline:none;box-shadow:0 0 0 3px rgba(212,168,63,.4)}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;font:1rem var(--sans);background:#fff;color:var(--ink)}
+.field textarea{resize:vertical;min-height:70px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--pine);outline:none;box-shadow:0 0 0 3px rgba(212,168,63,.4)}
 .lcard .btn{width:100%;margin-top:4px}
 .err{color:var(--out);font-size:.92rem;min-height:1.4em;margin-top:10px}
 #gbtn{display:flex;justify-content:center;margin-bottom:10px}
@@ -95,7 +96,7 @@ nav a:hover{color:var(--gold)}
 .collage .tall{grid-row:span 2;aspect-ratio:3/4.2}
 .collage .sq{aspect-ratio:1}
 .trust{background:var(--pine-2);color:#e9efe9}
-.trust ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);padding:16px 0;text-align:center;font-weight:500}
+.trust ul{list-style:none;display:grid;grid-template-columns:repeat(4,1fr);padding:16px 0;text-align:center;font-weight:500}
 .trust li{border-right:1px solid rgba(255,255,255,.18);padding:0 10px}
 .trust li:last-child{border:0}
 
@@ -103,6 +104,9 @@ section{padding:84px 0}
 .head{max-width:640px;margin-bottom:36px}
 .head h2{font-size:clamp(1.8rem,3.6vw,2.7rem);margin-bottom:10px;color:var(--pine)}
 .head p{color:var(--muted);font-size:1.06rem}
+.live{display:inline-flex;align-items:center;gap:7px;font:700 .78rem var(--sans);color:var(--ok);background:#e6f4ec;border-radius:999px;padding:4px 12px;margin-bottom:12px}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.25}}
 
 /* Gallery */
 .filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
@@ -132,11 +136,12 @@ section{padding:84px 0}
 .about img{width:min(320px,100%);aspect-ratio:1;object-fit:cover;border-radius:50%;border:6px solid var(--gold);margin-inline:auto;background:#fff}
 .about h2{font-size:clamp(1.8rem,3.4vw,2.5rem);color:var(--pine);margin-bottom:16px}
 .about p{color:var(--muted);margin-bottom:12px;font-size:1.04rem}
-.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;list-style:none;counter-reset:s}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;list-style:none;counter-reset:s}
 .steps li{counter-increment:s;background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px}
 .steps li::before{content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--berry);color:#fff;font:700 1.15rem var(--serif);margin-bottom:14px}
 .steps h3{font-size:1.2rem;margin-bottom:6px;color:var(--pine)}
 .steps p{color:var(--muted)}
+.deposit-note{margin-top:26px;background:#fff3cf;border:1px solid var(--gold);border-radius:12px;padding:16px 20px;color:#3a2e08}
 .contact{background:var(--pine);color:#fff;text-align:center}
 .contact h2{font-size:clamp(1.9rem,4vw,2.9rem);margin-bottom:12px}
 .contact p{color:#d3e0d8;max-width:52ch;margin:0 auto 26px;font-size:1.08rem}
@@ -145,7 +150,7 @@ section{padding:84px 0}
 footer{background:#0c241d;color:#9fb3a9;text-align:center;padding:24px 0 calc(24px + env(safe-area-inset-bottom));font-size:.9rem}
 footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:2px solid var(--gold)}
 
-/* Cart drawer (Amazon style) */
+/* Cart drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:90;opacity:0;visibility:hidden;transition:.25s}
 .scrim.open{opacity:1;visibility:visible}
 .drawer{position:fixed;top:0;right:0;height:100%;width:min(860px,100%);background:#eaeded;z-index:95;transform:translateX(100%);visibility:hidden;transition:transform .3s,visibility .3s;display:flex;flex-direction:column}
@@ -171,8 +176,9 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 .it .p{font-weight:700;font-size:1.1rem;text-align:right}
 .sub{text-align:right;padding-top:14px;font-size:1.15rem}
 .sum{align-self:start;font-size:1.05rem}
-.sum .tot{font-size:1.2rem;margin-bottom:14px}
+.sum .tot{font-size:1.2rem;margin-bottom:6px}
 .sum .tot b{display:block;font-size:1.5rem;color:var(--berry)}
+.sum .dep{font-size:.9rem;color:var(--muted);margin-bottom:14px}
 .sum .btn{width:100%}
 .empty{text-align:center;padding:40px 10px;color:var(--muted)}
 .empty .btn{margin-top:16px}
@@ -190,7 +196,10 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 .rl{width:100%;border-collapse:collapse;font-size:.95rem}
 .rl td{padding:7px 0;border-bottom:1px solid #f0ebe0;vertical-align:top}
 .rl td:last-child{text-align:right;white-space:nowrap}
-.rt{display:flex;justify-content:space-between;font:700 1.25rem var(--sans);padding:14px 0 4px}
+.rt{display:flex;justify-content:space-between;font:700 1.15rem var(--sans);padding:12px 0 4px}
+.rt.dep{color:var(--berry);font-size:1.3rem;background:#fff3cf;border:1px solid var(--gold);border-radius:10px;padding:10px 12px;margin-top:8px}
+.rt.bal{font-weight:500;font-size:1rem;color:var(--muted)}
+.warn{background:#fff3cf;border:1px solid var(--gold);padding:12px 14px;border-radius:10px;margin:6px 0 14px;font-size:.95rem}
 .rf{padding:0 22px 22px;display:grid;gap:10px}
 .rf .hint{font-size:.85rem;color:var(--muted);text-align:center}
 .thanks{text-align:center;padding:34px 24px}
@@ -247,7 +256,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 <body>
 <div id="snow" aria-hidden="true"></div>
 
-<!-- LOGIN (one form for everyone) -->
+<!-- LOGIN -->
 <div id="login">
   <div class="lcard">
     <div class="lights"></div>
@@ -261,7 +270,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
           <input id="uid" type="text" inputmode="email" autocomplete="username" autocapitalize="none" placeholder="yourname@gmail.com"></div>
         <div class="field" id="pw" hidden><label for="pwd">Password</label>
           <input id="pwd" type="password" autocomplete="current-password"></div>
-        <button class="btn" type="submit">Sign in</button>
+        <button class="btn" type="submit" id="loginBtn">Sign in</button>
       </form>
       <p class="err" id="err" role="alert"></p>
       <p class="note">Questions? WhatsApp 616-5591</p>
@@ -312,7 +321,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
         </div>
       </div>
       <div class="trust"><div class="wrap"><ul>
-        <li>Made with care</li><li>Custom orders welcome</li><li>Easy ordering on WhatsApp</li>
+        <li>Made with care</li><li>Custom orders welcome</li><li>Easy ordering on WhatsApp</li><li>50% deposit secures your order</li>
       </ul></div></div>
     </div>
     <div class="cane"></div>
@@ -320,8 +329,9 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
     <section id="collection">
       <div class="wrap">
         <div class="head">
+          <span class="live" id="liveTag" hidden>Live stock and prices</span>
           <h2>The Christmas collection</h2>
-          <p>Add as many designs as you like to your cart. Items marked In stock are ready to order.</p>
+          <p>Add as many designs as you like to your cart. Items marked In stock are ready to order. Stock and prices update automatically.</p>
         </div>
         <div class="filters" id="filters">
           <button data-f="all" aria-pressed="true">All</button>
@@ -350,8 +360,10 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
         <ol class="steps">
           <li><h3>Add to cart</h3><p>Pick every design you want and add it to your cart.</p></li>
           <li><h3>Check your receipt</h3><p>Review your items and total, then proceed to checkout.</p></li>
-          <li><h3>Send on WhatsApp</h3><p>Your receipt opens in WhatsApp. We confirm payment and delivery or pickup.</p></li>
+          <li><h3>Send on WhatsApp</h3><p>Your receipt opens in WhatsApp with your details filled in.</p></li>
+          <li><h3>Pay 50% deposit</h3><p>We confirm your order once the deposit is received. The balance is due at pickup or delivery.</p></li>
         </ol>
+        <div class="deposit-note"><strong>Please note:</strong> A 50% deposit is required before any order can be confirmed.</div>
       </div>
     </section>
 
@@ -377,20 +389,9 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
     <div class="dbody" id="dbody"></div>
   </aside>
 
-  <!-- Owner control panel -->
-  <div class="modal" id="cp" role="dialog" aria-modal="true" aria-label="Control panel">
-    <div class="rc" id="cpc"></div>
-  </div>
-
-  <!-- Owner edit -->
-  <div class="modal" id="ed" role="dialog" aria-modal="true" aria-label="Edit product">
-    <div class="rc" id="edc"></div>
-  </div>
-
-  <!-- Checkout receipt -->
-  <div class="modal" id="co" role="dialog" aria-modal="true" aria-label="Checkout">
-    <div class="rc" id="rc"></div>
-  </div>
+  <div class="modal" id="cp" role="dialog" aria-modal="true" aria-label="Control panel"><div class="rc" id="cpc"></div></div>
+  <div class="modal" id="ed" role="dialog" aria-modal="true" aria-label="Edit product"><div class="rc" id="edc"></div></div>
+  <div class="modal" id="co" role="dialog" aria-modal="true" aria-label="Checkout"><div class="rc" id="rc"></div></div>
 
   <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Design preview">
     <button class="x" id="lbX" aria-label="Close">&times;</button>
@@ -406,9 +407,20 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 const SHOP = "Creative Design and Rentals BZ";
 const PHONE = "5016165591";          // 501 = Belize country code
 const DEFAULT_PRICE = 20;            // price (BZ$) given to new products until you change it
+const DEPOSIT_RATE = 0.5;            // 50% deposit
 const ADMIN_USER = "ADMIN";
-const ADMIN_HASH = "9935e45c0d69ac53211c3bd13cddd36691a1872a70082ba8d574aeb587de1a91";
+const ADMIN_HASH = "9935e45c0d69ac53211c3bd13cddd36691a1872a70082ba8d574aeb587de1a91"; // only used when Firebase is OFF
 const GOOGLE_CLIENT_ID = "";         // paste a Google OAuth Client ID to turn on the real Google button
+
+/* LIVE UPDATES (Firebase). Fill these in to make every change show instantly for all customers.
+   Leave apiKey empty to keep the old behavior (products.json + this browser only). */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyAVDBwyP1LyS_SNXEQp-HPAN9Gd2q0Lsck",
+  authDomain: "kareem-zuniga.firebaseapp.com",
+  projectId: "kareem-zuniga",
+  appId: "1:38823522181:web:6c72719013f431425d5eec"
+};
+const OWNER_EMAIL = "kareem.zuniga92@gmail.com";              // the owner login email you create in Firebase Authentication
 /* ====================== */
 
 const $ = id => document.getElementById(id);
@@ -425,34 +437,61 @@ const files = [
 ];
 const order = [7,2,12,0,9,4,14,1,10,5,15,3,8,13,6,11];
 const money = n => "BZ$" + Number(n).toFixed(2);
+const clone = o => JSON.parse(JSON.stringify(o));
 
 const store = {
   get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 };
 
+/* ---------- Firebase (live database) ---------- */
+let usingFB = false, fbDb = null, fbAuth = null;
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement("script"); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+async function initFB(){
+  if (!FIREBASE_CONFIG.apiKey || !FIREBASE_CONFIG.projectId) return;
+  try{
+    const v = "10.12.2", b = `https://www.gstatic.com/firebasejs/${v}/`;
+    await loadScript(b + "firebase-app-compat.js");
+    await Promise.all([loadScript(b + "firebase-firestore-compat.js"), loadScript(b + "firebase-auth-compat.js")]);
+    firebase.initializeApp(FIREBASE_CONFIG);
+    fbDb = firebase.firestore(); fbAuth = firebase.auth(); usingFB = true;
+  }catch(e){ usingFB = false; }
+}
+
 /* ---------- Products ---------- */
 function defaults(){
   const oN = store.get("names")||{}, oP = store.get("prices")||{}, oPic = store.get("pics")||{}, oS = store.get("stock")||{};
-  return order.map((fi,pos) => ({id:"p"+fi, name:oN[fi] || "Design "+(pos+1), price:Number(oP[fi] ?? DEFAULT_PRICE), pic:oPic[fi] || encodeURI(files[fi]), stock:oS[fi] !== false}));
+  return order.map((fi,pos) => ({id:"p"+fi, name:oN[fi] || "Design "+(pos+1), price:Number(oP[fi] ?? DEFAULT_PRICE), pic:oPic[fi] || encodeURI(files[fi]), stock:oS[fi] !== false, sort:pos}));
 }
-let base = null, products = [];
+let base = null, products = [], dbEmpty = false;
 const ready = (async () => {
   try{ const r = await fetch("products.json", {cache:"no-store"}); if (r.ok) base = await r.json(); }catch(e){}
   if (!Array.isArray(base)) base = defaults();
+  await initFB();
 })();
 const find = id => products.find(p => p.id === id);
 const inStock = p => p.stock !== false;
-const saveProducts = () => store.set("products_admin", products);
+const saveLocal = () => store.set("products_admin", products);
+async function persist(p){
+  if (usingFB){
+    await fbDb.collection("products").doc(p.id).set({name:p.name, price:Number(p.price), pic:p.pic, stock:p.stock !== false, sort:p.sort ?? 0});
+    return true;
+  }
+  return saveLocal();
+}
+async function removeProduct(id){
+  if (usingFB){ await fbDb.collection("products").doc(id).delete(); return true; }
+  return saveLocal();
+}
 
 let cart = store.get("cart2") || {};
 let session = store.get("session");
-let filter = "all", receiptNo = "";
+let filter = "all", receiptNo = "", unsub = null, pollT = null;
 const isAdmin = () => session && session.role === "admin";
 const wa = t => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
 const saveCart = () => store.set("cart2", cart);
 let tt;
-const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2400); };
+const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2600); };
 
 /* ---------- Snow ---------- */
 (function(){
@@ -465,7 +504,7 @@ const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("s
   }
 })();
 
-/* ---------- Single login ---------- */
+/* ---------- Login ---------- */
 const err = m => $("err").textContent = m || "";
 $("uid").addEventListener("input", () => { $("pw").hidden = $("uid").value.trim().toUpperCase() !== ADMIN_USER; err(); });
 function signIn(s){ session = s; store.set("session", s); enter(); }
@@ -477,8 +516,13 @@ $("lf").onsubmit = async e => {
   e.preventDefault();
   const v = $("uid").value.trim();
   if (v.toUpperCase() === ADMIN_USER){
+    await ready;
     let ok = false;
-    try { ok = (await sha($("pwd").value)) === ADMIN_HASH; } catch(x){}
+    if (usingFB){
+      try { await fbAuth.signInWithEmailAndPassword(OWNER_EMAIL, $("pwd").value); ok = true; } catch(x){}
+    } else {
+      try { ok = (await sha($("pwd").value)) === ADMIN_HASH; } catch(x){}
+    }
     if (!ok) return err("Those details are not correct. Please try again.");
     return signIn({role:"admin", email:"Owner"});
   }
@@ -499,8 +543,10 @@ function googleInit(){
   google.accounts.id.renderButton($("gbtn"), {theme:"outline", size:"large", text:"signin_with", width:300});
 }
 window.addEventListener("load", () => setTimeout(googleInit, 400));
+function stopLive(){ if (unsub){ unsub(); unsub = null; } clearInterval(pollT); }
 $("logout").onclick = () => {
-  session = null; store.set("session", null);
+  if (isAdmin() && usingFB) fbAuth.signOut().catch(()=>{});
+  session = null; store.set("session", null); stopLive();
   closeAll(); $("app").hidden = true; $("login").hidden = false; $("uid").value = ""; $("pwd").value = ""; $("pw").hidden = true; scrollTo(0,0);
 };
 
@@ -525,12 +571,13 @@ function render(){
   });
   if (!g.children.length) g.innerHTML = '<p style="color:var(--muted)">No designs match this filter.</p>';
 }
-function toggleStock(id){
+async function toggleStock(id){
   const p = find(id); if (!p) return;
-  p.stock = !inStock(p); saveProducts();
+  p.stock = !inStock(p);
   if (!p.stock) delete cart[id];
-  saveCart(); updCount(); render();
-  if ($("cp").classList.contains("open")) openCP();
+  saveCart(); refresh();
+  try{ await persist(p); toast(p.stock ? "Marked in stock (live)" : "Marked out of stock (live)"); }
+  catch(e){ toast("Could not save. Check your connection."); }
 }
 $("grid").addEventListener("click", e => {
   const a = e.target.closest("[data-a]");
@@ -553,6 +600,7 @@ $("filters").addEventListener("click", e => {
 const keys = () => Object.keys(cart).filter(k => cart[k] > 0 && find(k) && inStock(find(k)));
 const total = () => keys().reduce((s,k) => s + find(k).price * cart[k], 0);
 const count = () => keys().reduce((s,k) => s + cart[k], 0);
+const deposit = () => Math.round(total() * DEPOSIT_RATE * 100) / 100;
 function updCount(){ $("cnt").textContent = count(); if ($("drawer").classList.contains("open")) drawCart(); }
 
 function drawCart(){
@@ -570,6 +618,7 @@ function drawCart(){
       <div class="p">${money(p.price * cart[k])}</div></div>`; }).join("") +
     `<div class="sub">Subtotal (${n} item${n>1?"s":""}): <b>${money(total())}</b></div></div>
      <div class="sum"><div class="tot">Subtotal (${n} item${n>1?"s":""}):<b>${money(total())}</b></div>
+       <div class="dep">50% deposit due to confirm: <b>${money(deposit())}</b></div>
        <button class="btn gold" id="goCo">Proceed to checkout</button></div>`;
 }
 function openCart(){ drawCart(); $("drawer").classList.add("open"); $("scrim").classList.add("open"); }
@@ -597,12 +646,24 @@ function openCheckout(){
   $("rc").innerHTML =
     `<div class="rh"><img src="logo.jpeg" alt="${SHOP} logo"><h3>${SHOP}</h3><small>Receipt</small></div>
      <div class="rb"><div class="meta"><span>Receipt #: <b>${receiptNo}</b></span><span>${when}</span></div>
-       <div class="field">   <label for="cname">Your name</label>   <input id="cname" autocomplete="name" placeholder="Name for the order"> </div>  <div class="field">   <label for="deliveryMethod">Pickup / Delivery Method</label>   <select id="deliveryMethod">     <option value="">Select an option</option>     <option value="Self Pickup - San Ignacio, Cayo">       Self Pickup (San Ignacio, Cayo)     </option>     <option value="BPMS Delivery">       BPMS Delivery     </option>     <option value="IDS Delivery">       IDS Delivery     </option>   </select> </div>  <div style="background:#fff3cf;border:1px solid #d4a83f;padding:12px;border-radius:10px;margin:15px 0;">   <strong>IMPORTANT:</strong><br>   A 50% deposit is required before any order can be confirmed. </div>
+       <div class="field"><label for="cname">Your name</label><input id="cname" autocomplete="name" placeholder="Name for the order"></div>
+       <div class="field"><label for="deliveryMethod">Pickup / Delivery Method</label>
+         <select id="deliveryMethod">
+           <option value="">Select an option</option>
+           <option value="Self Pickup - San Ignacio, Cayo">Self Pickup (San Ignacio, Cayo)</option>
+           <option value="BPMS Delivery">BPMS Delivery</option>
+           <option value="IDS Delivery">IDS Delivery</option>
+         </select></div>
+       <div class="field"><label for="needDate">Date needed (optional)</label><input id="needDate" type="date"></div>
+       <div class="field"><label for="cnotes">Notes (optional)</label><textarea id="cnotes" maxlength="300" placeholder="Colors, names, sizes, custom requests"></textarea></div>
+       <div class="warn"><strong>IMPORTANT:</strong> A 50% deposit is required before any order can be confirmed.</div>
        <table class="rl">${ks.map(k => `<tr><td>${esc(find(k).name)} &times; ${cart[k]}</td><td>${money(find(k).price*cart[k])}</td></tr>`).join("")}</table>
-       <div class="rt"><span>Total</span><span>${money(total())}</span></div></div>
+       <div class="rt"><span>Total</span><span>${money(total())}</span></div>
+       <div class="rt dep"><span>50% deposit due</span><span>${money(deposit())}</span></div>
+       <div class="rt bal"><span>Balance at pickup / delivery</span><span>${money(total() - deposit())}</span></div></div>
      <div class="rf"><button class="btn gold" id="sendWa">Send order on WhatsApp</button>
        <button class="btn ghost" id="backCart" style="color:var(--pine);border-color:var(--pine)">Back to cart</button>
-       <p class="hint">Your receipt opens in WhatsApp. We will confirm payment and delivery with you there.</p></div>`;
+       <p class="hint">Your receipt opens in WhatsApp. Your order is confirmed once the 50% deposit is received.</p></div>`;
   $("co").classList.add("open"); $("drawer").classList.remove("open"); $("scrim").classList.remove("open");
   $("cname").focus();
 }
@@ -610,21 +671,20 @@ $("rc").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   if (b.id === "backCart"){ $("co").classList.remove("open"); openCart(); }
   if (b.id === "sendWa"){
-   const nm = $("cname").value.trim();
-const delivery = $("deliveryMethod").value; 
-    if (!delivery){
-  $("deliveryMethod").focus();
-  return toast("Please select a pickup or delivery option");
-}
-
+    const nm = $("cname").value.trim();
+    const delivery = $("deliveryMethod").value;
     if (!nm){ $("cname").focus(); return toast("Please enter your name first"); }
-    const ks = keys(), em = session && session.role !== "admin" ? session.email : "";
-    const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
+    if (!delivery){ $("deliveryMethod").focus(); return toast("Please select a pickup or delivery option"); }
+    const ks = keys();
+    if (!ks.length){ toast("Your cart is empty"); return; }
+    const em = session && session.role !== "admin" ? session.email : "";
+    const dt = $("needDate").value, notes = $("cnotes").value.trim();
+    const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}${em ? "\nEmail: " + em : ""}\nPickup/Delivery: ${delivery}${dt ? "\nDate needed: " + dt : ""}${notes ? "\nNotes: " + notes : ""}\n\n*Items*\n` +
       ks.map((k,i) => `${i+1}. ${find(k).name} x${cart[k]} - ${money(find(k).price*cart[k])}`).join("\n") +
-      `\n\n*Total: ${money(total())}*\n\nPlease confirm my order. Thank you!`;
+      `\n\n*Total: ${money(total())}*\n*50% deposit due: ${money(deposit())}*\nBalance at pickup/delivery: ${money(total() - deposit())}\n\nI understand a 50% deposit is required before my order is confirmed. Please confirm my order. Thank you!`;
     window.open(wa(msg), "_blank");
     cart = {}; saveCart(); updCount();
-    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${esc(nm)}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
+    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${esc(nm)}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish. Your order is confirmed once the 50% deposit is received.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
   }
   if (b.id === "doneBtn") closeAll();
 });
@@ -632,25 +692,30 @@ const delivery = $("deliveryMethod").value;
 /* ---------- Owner: control panel, add / edit / delete ---------- */
 let editId = null, newPic = null;
 function openCP(){
-  $("cpc").innerHTML = `<div class="rh"><h3>Control panel</h3><small>${products.length} product${products.length === 1 ? "" : "s"}</small></div>
+  $("cpc").innerHTML = `<div class="rh"><h3>Control panel</h3><small>${products.length} product${products.length === 1 ? "" : "s"} &middot; ${usingFB ? "Live mode ON" : "Local mode (set up Firebase for live updates)"}</small></div>
     <div class="rb">${products.map(p => `<div class="cpr"><img src="${p.pic}" alt="">
       <div class="cpn"><b>${esc(p.name)}</b><span>${money(p.price)} &middot; ${inStock(p) ? "In stock" : "Out of stock"}</span></div>
       <div class="cpb"><button class="tog" data-e="${p.id}">Edit</button><button class="tog" data-t="${p.id}">${inStock(p) ? "Set out of stock" : "Set in stock"}</button></div></div>`).join("") || "<p>No products yet.</p>"}</div>
     <div class="rf"><button class="btn gold" data-add="1">Add new product</button>
-      <button class="btn" data-exp="1">Export for website</button>
+      ${usingFB && dbEmpty ? `<button class="btn" data-seed="1">Publish starting products live</button>` : ""}
+      ${usingFB ? "" : `<button class="btn" data-exp="1">Export for website</button>`}
       <button class="btn ghost" data-c="1" style="color:var(--pine);border-color:var(--pine)">Close</button>
-      <p class="hint">Export downloads products.json. Put it in your website folder next to index.html so every customer sees your changes.</p></div>`;
+      <p class="hint">${usingFB ? "Every change you make is saved live and shows for all customers within a second or two." : "Export downloads products.json. Put it in your website folder next to index.html."}</p></div>`;
   $("cp").classList.add("open");
 }
 $("cpBtn").onclick = openCP;
 $("addBtn").onclick = () => openEdit(null);
-$("cpc").addEventListener("click", e => {
+$("cpc").addEventListener("click", async e => {
   const b = e.target.closest("button"); if (!b) return;
   const d = b.dataset;
   if (d.c) $("cp").classList.remove("open");
   else if (d.e) openEdit(d.e);
   else if (d.t) toggleStock(d.t);
   else if (d.add) openEdit(null);
+  else if (d.seed){
+    try{ for (const p of clone(base)) await persist({...p, sort: p.sort ?? 0}); toast("Products are now live"); }
+    catch(x){ toast("Could not publish. Check Firebase rules."); }
+  }
   else if (d.exp){
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([JSON.stringify(products)], {type:"application/json"}));
@@ -662,7 +727,7 @@ $("cpc").addEventListener("click", e => {
 function openEdit(id){
   editId = id; newPic = null;
   const p = id ? find(id) : {name:"", price:DEFAULT_PRICE, pic:""};
-  $("edc").innerHTML = `<div class="rh"><h3>${id ? "Edit product" : "Add new product"}</h3><small>Saved in this browser. Use Export to publish.</small></div>
+  $("edc").innerHTML = `<div class="rh"><h3>${id ? "Edit product" : "Add new product"}</h3><small>${usingFB ? "Saved live for everyone." : "Saved in this browser. Use Export to publish."}</small></div>
     <div class="rb"><div class="prev"><img id="edPrev" src="${p.pic}" alt="Picture preview" ${p.pic ? "" : "hidden"}></div>
       <div class="field"><label for="edPic">${id ? "Change picture" : "Picture"}</label><input id="edPic" type="file" accept="image/*"></div>
       <div class="field"><label for="edName">Product name</label><input id="edName" maxlength="40" value="${esc(p.name)}" placeholder="e.g. Red Bow Wreath"></div>
@@ -677,26 +742,27 @@ $("edc").addEventListener("change", e => {
   const rd = new FileReader();
   rd.onload = () => { const im = new Image();
     im.onload = () => {
-      const sc = Math.min(1, 800 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+      const sc = Math.min(1, 700 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
       cv.width = Math.round(im.width * sc); cv.height = Math.round(im.height * sc);
       cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
-      newPic = cv.toDataURL("image/jpeg", .8); $("edPrev").src = newPic; $("edPrev").hidden = false;
+      newPic = cv.toDataURL("image/jpeg", .75); $("edPrev").src = newPic; $("edPrev").hidden = false;
     };
     im.onerror = () => toast("That file is not a picture");
     im.src = rd.result; };
   rd.readAsDataURL(e.target.files[0]);
 });
-$("edc").addEventListener("click", e => {
+$("edc").addEventListener("click", async e => {
   const b = e.target.closest("button"); if (!b) return;
   const d = b.dataset;
   if (d.c){ $("ed").classList.remove("open"); return; }
-  const afterSave = m => { $("ed").classList.remove("open"); render(); updCount(); if ($("cp").classList.contains("open")) openCP(); toast(m); };
+  const afterSave = m => { $("ed").classList.remove("open"); refresh(); toast(m); };
   if (d.x){
     const p = find(editId);
     if (!p || !confirm('Delete "' + p.name + '"? This cannot be undone.')) return;
-    const backup = JSON.stringify(products);
+    const backup = clone(products);
     products = products.filter(x => x.id !== editId); delete cart[editId]; saveCart();
-    if (!saveProducts()){ products = JSON.parse(backup); return toast("Could not save. Try again."); }
+    try{ if (!(await removeProduct(editId))) throw 0; }
+    catch(x){ products = backup; return toast("Could not delete. Try again."); }
     return afterSave("Product deleted");
   }
   if (d.s){
@@ -704,25 +770,66 @@ $("edc").addEventListener("click", e => {
     if (!nm) return toast("Please enter a name");
     if (isNaN(pr) || pr < 0) return toast("Enter a valid price");
     if (!editId && !newPic) return toast("Please choose a picture");
-    const backup = JSON.stringify(products);
-    if (editId){ const p = find(editId); p.name = nm; p.price = pr; if (newPic) p.pic = newPic; }
-    else products.unshift({id:"n" + Date.now(), name:nm, price:pr, pic:newPic, stock:true});
-    if (!saveProducts()){ products = JSON.parse(backup); return toast("Not enough space to save this picture. Try a smaller one."); }
+    const backup = clone(products);
+    let item;
+    if (editId){ item = find(editId); item.name = nm; item.price = pr; if (newPic) item.pic = newPic; }
+    else { item = {id:"n" + Date.now(), name:nm, price:pr, pic:newPic, stock:true, sort:-Date.now()}; products.unshift(item); }
+    try{ if (!(await persist(item))) throw 0; }
+    catch(x){ products = backup; return toast("Could not save. Try a smaller picture or check your connection."); }
     afterSave(editId ? "Saved" : "Product added");
   }
 });
 
+/* ---------- Live sync ---------- */
+function refresh(){
+  render(); updCount();
+  if ($("cp").classList.contains("open")) openCP();
+  if ($("lb").classList.contains("open")) show(cur);
+}
+function startLive(){
+  stopLive();
+  if (usingFB){
+    unsub = fbDb.collection("products").onSnapshot(snap => {
+      $("liveTag").hidden = false;
+      const prev = JSON.stringify(products.map(p => [p.id, p.price, p.stock]));
+      if (snap.empty){ dbEmpty = true; products = clone(base); }
+      else {
+        dbEmpty = false;
+        products = snap.docs.map(x => ({id:x.id, ...x.data()})).sort((a,b) => (a.sort ?? 0) - (b.sort ?? 0));
+      }
+      const gone = Object.keys(cart).some(k => cart[k] > 0 && (!find(k) || !inStock(find(k))));
+      refresh();
+      if (gone && !isAdmin() && prev !== "[]") toast("Some items in your cart are no longer available");
+    }, () => { $("liveTag").hidden = true; if (!products.length){ products = clone(base); refresh(); } });
+  } else if (isAdmin()){
+    const local = store.get("products_admin");
+    products = Array.isArray(local) ? local : clone(base);
+    refresh();
+  } else {
+    products = clone(base); refresh();
+    pollT = setInterval(async () => {
+      try{
+        const r = await fetch("products.json", {cache:"no-store"}); if (!r.ok) return;
+        const j = await r.json();
+        if (Array.isArray(j) && JSON.stringify(j) !== JSON.stringify(base)){ base = j; products = clone(j); refresh(); }
+      }catch(e){}
+    }, 30000);
+  }
+}
+
 /* ---------- Enter site ---------- */
 async function enter(){
   await ready;
-  const local = isAdmin() ? store.get("products_admin") : null;
-  products = Array.isArray(local) ? local : JSON.parse(JSON.stringify(base));
+  if (isAdmin() && usingFB){
+    const u = await new Promise(r => { const off = fbAuth.onAuthStateChanged(x => { off(); r(x); }); });
+    if (!u){ session = null; store.set("session", null); $("login").hidden = false; $("app").hidden = true; return; }
+  }
   $("login").hidden = true; $("app").hidden = false;
   $("who").textContent = isAdmin() ? "Owner" : session.email;
   $("adminbar").hidden = !isAdmin();
   document.querySelectorAll(".wa").forEach(a => a.href = wa("Hi! I'd like to ask about your Christmas designs."));
   $("yr").textContent = new Date().getFullYear();
-  render(); updCount(); scrollTo(0,0);
+  startLive(); scrollTo(0,0);
 }
 
 /* Menu + lightbox */
