@@ -80,7 +80,9 @@ nav a:hover{color:var(--gold)}
 .cartbtn svg{width:22px;height:22px}
 .cartbtn .n{background:var(--berry);color:#fff;border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:.78rem;padding:0 6px}
 .menu-btn{display:none;background:none;border:0;color:#fff;font-size:1.8rem;cursor:pointer;padding:2px 6px}
-.adminbar{background:#fff3cf;color:#3a2e08;text-align:center;font-weight:600;font-size:.9rem;padding:8px 12px}
+.adminbar{background:#fff3cf;color:#3a2e08;font-weight:600;font-size:.9rem;padding:8px 12px;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.adminbar button{background:var(--pine);color:#fff;border:0;border-radius:999px;padding:7px 16px;font:700 .85rem var(--sans);cursor:pointer}
+.adminbar button:hover{background:var(--pine-2)}
 
 /* Hero */
 .hero{background:var(--pine);color:#fff;background-image:radial-gradient(rgba(255,255,255,.09) 2px,transparent 2.5px);background-size:46px 46px}
@@ -110,7 +112,7 @@ section{padding:84px 0}
 .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;border-top:4px solid var(--berry)}
 .pic{position:relative;aspect-ratio:4/5;background:#f4efe5}
 .pic button{border:0;padding:0;background:none;width:100%;height:100%;cursor:zoom-in;display:grid;place-items:center}
-.pic img{width:100%;height:100%;object-fit:contain;object-position:center}
+.pic img{width:100%;height:100%;object-fit:cover;object-position:center}
 .card.sold .pic img{filter:grayscale(.85) brightness(.92)}
 .badge{position:absolute;top:10px;left:10px;padding:4px 11px;border-radius:999px;color:#fff;font:700 .78rem var(--sans);background:var(--ok);box-shadow:0 2px 8px rgba(0,0,0,.25)}
 .sold .badge{background:var(--out)}
@@ -157,7 +159,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 .items h2{font:500 1.5rem var(--sans);padding-bottom:10px;border-bottom:1px solid #ddd;display:flex;justify-content:space-between;align-items:baseline}
 .items h2 small{font-size:.85rem;color:var(--muted)}
 .it{display:grid;grid-template-columns:96px 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid #eee}
-.it img{width:96px;height:120px;object-fit:contain;background:#f4efe5;border-radius:6px}
+.it img{width:96px;height:120px;object-fit:cover;object-position:center;background:#f4efe5;border-radius:6px}
 .it h3{font:500 1.05rem var(--sans)}
 .it .stk{color:var(--ok);font-size:.85rem;margin:2px 0 8px}
 .qty{display:inline-flex;align-items:center;border:1px solid #d5d9d9;border-radius:8px;background:#f0f2f2;overflow:hidden}
@@ -194,6 +196,11 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 .thanks{text-align:center;padding:34px 24px}
 .thanks h3{color:var(--pine);font-size:1.5rem;margin-bottom:8px}
 
+.cpr{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #f0ebe0}
+.cpr img{width:52px;height:64px;object-fit:cover;border-radius:6px;background:#f4efe5}
+.cpn b{display:block;font-size:.95rem;line-height:1.3}.cpn span{font-size:.82rem;color:var(--muted)}
+.cpb{display:flex;flex-direction:column;gap:6px}
+.cpb .tog{padding:6px 10px}
 .prev{background:#f4efe5;border-radius:10px;margin-bottom:12px;display:grid;place-items:center;padding:8px}
 .prev img{max-height:220px;object-fit:contain}
 .rb .field input[type=file]{padding:9px}
@@ -285,7 +292,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
     </div>
     <div class="lights"></div>
   </header>
-  <div class="adminbar" id="adminbar" hidden>Owner tools are on. Use Edit product under each design to change its picture, name and price, or mark it in or out of stock.</div>
+  <div class="adminbar" id="adminbar" hidden><span>Owner tools:</span><button id="cpBtn">Control panel</button><button id="addBtn">Add new product</button></div>
 
   <main id="top">
     <div class="hero">
@@ -370,6 +377,11 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
     <div class="dbody" id="dbody"></div>
   </aside>
 
+  <!-- Owner control panel -->
+  <div class="modal" id="cp" role="dialog" aria-modal="true" aria-label="Control panel">
+    <div class="rc" id="cpc"></div>
+  </div>
+
   <!-- Owner edit -->
   <div class="modal" id="ed" role="dialog" aria-modal="true" aria-label="Edit product">
     <div class="rc" id="edc"></div>
@@ -393,14 +405,14 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 /* ====== SETTINGS ====== */
 const SHOP = "Creative Design and Rentals BZ";
 const PHONE = "5016165591";          // 501 = Belize country code
-const DEFAULT_PRICE = 20;            // price (BZ$) used until you set one per design
-const PRICES = {};                   // optional fixed prices by design number, e.g. {1: 35, 2: 40}
+const DEFAULT_PRICE = 20;            // price (BZ$) given to new products until you change it
 const ADMIN_USER = "ADMIN";
 const ADMIN_HASH = "9935e45c0d69ac53211c3bd13cddd36691a1872a70082ba8d574aeb587de1a91";
 const GOOGLE_CLIENT_ID = "";         // paste a Google OAuth Client ID to turn on the real Google button
 /* ====================== */
 
 const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const files = [
   "WhatsApp Image 2026-10-21 at 10.08.22 PM.jpeg","WhatsApp Image 2026-10-21 at 10.08.22 PM (1).jpeg",
   "WhatsApp Image 2026-10-21 at 10.08.22 PM (2).jpeg","WhatsApp Image 2026-10-21 at 10.08.22 PM (3).jpeg",
@@ -412,29 +424,35 @@ const files = [
   "WhatsApp Image 2026-10-21 at 10.19.31 PM.jpeg","WhatsApp Image 2026-10-21 at 10.19.51 PM.jpeg"
 ];
 const order = [7,2,12,0,9,4,14,1,10,5,15,3,8,13,6,11];
-const src = i => pics[i] || encodeURI(files[i]);
-const nameOf = i => names[i] || "Design " + (order.indexOf(i) + 1);
-const money = n => "BZ$" + n.toFixed(2);
+const money = n => "BZ$" + Number(n).toFixed(2);
 
 const store = {
   get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 };
-let stock = store.get("stock") || {};
-let prices = store.get("prices") || {};
-let names = store.get("names") || {};
-let pics = store.get("pics") || {};
-let cart = store.get("cart") || {};
+
+/* ---------- Products ---------- */
+function defaults(){
+  const oN = store.get("names")||{}, oP = store.get("prices")||{}, oPic = store.get("pics")||{}, oS = store.get("stock")||{};
+  return order.map((fi,pos) => ({id:"p"+fi, name:oN[fi] || "Design "+(pos+1), price:Number(oP[fi] ?? DEFAULT_PRICE), pic:oPic[fi] || encodeURI(files[fi]), stock:oS[fi] !== false}));
+}
+let base = null, products = [];
+const ready = (async () => {
+  try{ const r = await fetch("products.json", {cache:"no-store"}); if (r.ok) base = await r.json(); }catch(e){}
+  if (!Array.isArray(base)) base = defaults();
+})();
+const find = id => products.find(p => p.id === id);
+const inStock = p => p.stock !== false;
+const saveProducts = () => store.set("products_admin", products);
+
+let cart = store.get("cart2") || {};
 let session = store.get("session");
 let filter = "all", receiptNo = "";
-
 const isAdmin = () => session && session.role === "admin";
-const inStock = i => stock[i] !== false;
-const priceOf = i => prices[i] ?? PRICES[order.indexOf(i) + 1] ?? DEFAULT_PRICE;
 const wa = t => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
-const saveCart = () => store.set("cart", cart);
+const saveCart = () => store.set("cart2", cart);
 let tt;
-const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2200); };
+const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2400); };
 
 /* ---------- Snow ---------- */
 (function(){
@@ -450,7 +468,6 @@ const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("s
 /* ---------- Single login ---------- */
 const err = m => $("err").textContent = m || "";
 $("uid").addEventListener("input", () => { $("pw").hidden = $("uid").value.trim().toUpperCase() !== ADMIN_USER; err(); });
-
 function signIn(s){ session = s; store.set("session", s); enter(); }
 async function sha(t){
   const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
@@ -490,34 +507,40 @@ $("logout").onclick = () => {
 /* ---------- Gallery ---------- */
 function render(){
   const g = $("grid"); g.innerHTML = "";
-  order.forEach((idx, pos) => {
-    const s = inStock(idx);
+  products.forEach(p => {
+    const s = inStock(p);
     if ((filter === "in" && !s) || (filter === "out" && s)) return;
-    const n = pos + 1;
     const c = document.createElement("article");
     c.className = "card" + (s ? "" : " sold");
     c.innerHTML =
-      `<div class="pic"><button type="button" data-v="${idx}" aria-label="View ${nameOf(idx)} larger"><img src="${src(idx)}" alt="${nameOf(idx)}" loading="lazy"></button>
+      `<div class="pic"><button type="button" data-v="${p.id}" aria-label="View ${esc(p.name)} larger"><img src="${p.pic}" alt="${esc(p.name)}" loading="lazy"></button>
          <span class="badge">${s ? "In stock" : "Out of stock"}</span>
          <img class="mark" src="logo.jpeg" alt="${SHOP} logo"></div>
        <div class="info">
-         <div class="row"><h3>${nameOf(idx)}</h3><span class="price">${money(priceOf(idx))}</span></div>
-         ${s ? `<button class="btn" data-a="${idx}">Add to cart</button>` : `<button class="btn" disabled>Out of stock</button>`}
-         ${isAdmin() ? `<div class="tools"><button class="tog" data-t="${idx}">${s ? "Mark out of stock" : "Mark in stock"}</button><button class="tog" data-e="${idx}">Edit product</button></div>` : ""}
+         <div class="row"><h3>${esc(p.name)}</h3><span class="price">${money(p.price)}</span></div>
+         ${s ? `<button class="btn" data-a="${p.id}">Add to cart</button>` : `<button class="btn" disabled>Out of stock</button>`}
+         ${isAdmin() ? `<div class="tools"><button class="tog" data-t="${p.id}">${s ? "Mark out of stock" : "Mark in stock"}</button><button class="tog" data-e="${p.id}">Edit product</button></div>` : ""}
        </div>`;
     g.appendChild(c);
   });
   if (!g.children.length) g.innerHTML = '<p style="color:var(--muted)">No designs match this filter.</p>';
 }
+function toggleStock(id){
+  const p = find(id); if (!p) return;
+  p.stock = !inStock(p); saveProducts();
+  if (!p.stock) delete cart[id];
+  saveCart(); updCount(); render();
+  if ($("cp").classList.contains("open")) openCP();
+}
 $("grid").addEventListener("click", e => {
   const a = e.target.closest("[data-a]");
-  if (a){ const i = a.dataset.a; cart[i] = Math.min((cart[i] || 0) + 1, 20); saveCart(); updCount(); toast(nameOf(+i) + " added to cart"); return; }
+  if (a){ const i = a.dataset.a; cart[i] = Math.min((cart[i] || 0) + 1, 20); saveCart(); updCount(); toast(find(i).name + " added to cart"); return; }
   const t = e.target.closest("[data-t]");
-  if (t && isAdmin()){ const i = t.dataset.t; stock[i] = !inStock(i); store.set("stock", stock); if (!stock[i]) delete cart[i]; saveCart(); updCount(); render(); return; }
+  if (t && isAdmin()){ toggleStock(t.dataset.t); return; }
   const p = e.target.closest("[data-e]");
-  if (p && isAdmin()){ openEdit(+p.dataset.e); return; }
+  if (p && isAdmin()){ openEdit(p.dataset.e); return; }
   const v = e.target.closest("[data-v]");
-  if (v){ show(order.indexOf(+v.dataset.v)); $("lb").classList.add("open"); $("lbX").focus(); }
+  if (v){ show(products.findIndex(x => x.id === v.dataset.v)); $("lb").classList.add("open"); $("lbX").focus(); }
 });
 $("filters").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
@@ -527,8 +550,8 @@ $("filters").addEventListener("click", e => {
 });
 
 /* ---------- Cart ---------- */
-const keys = () => Object.keys(cart).filter(k => cart[k] > 0 && inStock(k));
-const total = () => keys().reduce((s,k) => s + priceOf(+k) * cart[k], 0);
+const keys = () => Object.keys(cart).filter(k => cart[k] > 0 && find(k) && inStock(find(k)));
+const total = () => keys().reduce((s,k) => s + find(k).price * cart[k], 0);
 const count = () => keys().reduce((s,k) => s + cart[k], 0);
 function updCount(){ $("cnt").textContent = count(); if ($("drawer").classList.contains("open")) drawCart(); }
 
@@ -540,17 +563,17 @@ function drawCart(){
   }
   $("dbody").innerHTML =
     `<div class="items"><h2>Shopping Cart <small>Price</small></h2>` +
-    ks.map(k => `<div class="it"><img src="${src(k)}" alt="${nameOf(+k)}">
-      <div><h3>${nameOf(+k)}</h3><div class="stk">In stock</div>
+    ks.map(k => { const p = find(k); return `<div class="it"><img src="${p.pic}" alt="${esc(p.name)}">
+      <div><h3>${esc(p.name)}</h3><div class="stk">In stock</div>
         <div class="qty"><button data-m="${k}" aria-label="Decrease">&minus;</button><span>${cart[k]}</span><button data-q="${k}" aria-label="Increase">+</button></div>
         <button class="del" data-d="${k}">Delete</button></div>
-      <div class="p">${money(priceOf(+k) * cart[k])}</div></div>`).join("") +
+      <div class="p">${money(p.price * cart[k])}</div></div>`; }).join("") +
     `<div class="sub">Subtotal (${n} item${n>1?"s":""}): <b>${money(total())}</b></div></div>
      <div class="sum"><div class="tot">Subtotal (${n} item${n>1?"s":""}):<b>${money(total())}</b></div>
        <button class="btn gold" id="goCo">Proceed to checkout</button></div>`;
 }
 function openCart(){ drawCart(); $("drawer").classList.add("open"); $("scrim").classList.add("open"); }
-function closeAll(){ $("ed").classList.remove("open"); $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("co").classList.remove("open"); $("lb").classList.remove("open"); }
+function closeAll(){ ["co","ed","cp","lb"].forEach(i => $(i).classList.remove("open")); $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); }
 $("openCart").onclick = openCart;
 $("closeCart").onclick = $("scrim").onclick = closeAll;
 $("dbody").addEventListener("click", e => {
@@ -575,7 +598,7 @@ function openCheckout(){
     `<div class="rh"><img src="logo.jpeg" alt="${SHOP} logo"><h3>${SHOP}</h3><small>Receipt</small></div>
      <div class="rb"><div class="meta"><span>Receipt #: <b>${receiptNo}</b></span><span>${when}</span></div>
        <div class="field"><label for="cname">Your name</label><input id="cname" autocomplete="name" placeholder="Name for the order"></div>
-       <table class="rl">${ks.map(k => `<tr><td>${nameOf(+k)} &times; ${cart[k]}</td><td>${money(priceOf(+k)*cart[k])}</td></tr>`).join("")}</table>
+       <table class="rl">${ks.map(k => `<tr><td>${esc(find(k).name)} &times; ${cart[k]}</td><td>${money(find(k).price*cart[k])}</td></tr>`).join("")}</table>
        <div class="rt"><span>Total</span><span>${money(total())}</span></div></div>
      <div class="rf"><button class="btn gold" id="sendWa">Send order on WhatsApp</button>
        <button class="btn ghost" id="backCart" style="color:var(--pine);border-color:var(--pine)">Back to cart</button>
@@ -591,27 +614,55 @@ $("rc").addEventListener("click", e => {
     if (!nm){ $("cname").focus(); return toast("Please enter your name first"); }
     const ks = keys(), em = session && session.role !== "admin" ? session.email : "";
     const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
-      ks.map((k,i) => `${i+1}. ${nameOf(+k)} x${cart[k]} - ${money(priceOf(+k)*cart[k])}`).join("\n") +
+      ks.map((k,i) => `${i+1}. ${find(k).name} x${cart[k]} - ${money(find(k).price*cart[k])}`).join("\n") +
       `\n\n*Total: ${money(total())}*\n\nPlease confirm my order. Thank you!`;
     window.open(wa(msg), "_blank");
     cart = {}; saveCart(); updCount();
-    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${nm.replace(/[<>&"]/g,"")}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
+    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${esc(nm)}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
   }
   if (b.id === "doneBtn") closeAll();
 });
 
-/* ---------- Owner: edit product ---------- */
-let newPic = null;
-const saveAll = () => { const a = store.set("names",names), b = store.set("prices",prices), c = store.set("pics",pics); return a && b && c; };
-function openEdit(i){
-  newPic = null;
-  $("edc").innerHTML = `<div class="rh"><h3>Edit product</h3><small>Changes are saved in this browser</small></div>
-    <div class="rb"><div class="prev"><img id="edPrev" src="${src(i)}" alt="Current picture"></div>
-      <div class="field"><label for="edPic">Change picture</label><input id="edPic" type="file" accept="image/*"></div>
-      <div class="field"><label for="edName">Product name</label><input id="edName" maxlength="40" value="${nameOf(i)}"></div>
-      <div class="field"><label for="edPrice">Price (BZ$)</label><input id="edPrice" type="number" min="0" step="0.01" inputmode="decimal" value="${priceOf(i)}"></div></div>
-    <div class="rf"><button class="btn gold" data-s="${i}">Save changes</button>
-      <button class="btn ghost" data-x="${i}" style="color:var(--pine);border-color:var(--pine)">Reset to original</button>
+/* ---------- Owner: control panel, add / edit / delete ---------- */
+let editId = null, newPic = null;
+function openCP(){
+  $("cpc").innerHTML = `<div class="rh"><h3>Control panel</h3><small>${products.length} product${products.length === 1 ? "" : "s"}</small></div>
+    <div class="rb">${products.map(p => `<div class="cpr"><img src="${p.pic}" alt="">
+      <div class="cpn"><b>${esc(p.name)}</b><span>${money(p.price)} &middot; ${inStock(p) ? "In stock" : "Out of stock"}</span></div>
+      <div class="cpb"><button class="tog" data-e="${p.id}">Edit</button><button class="tog" data-t="${p.id}">${inStock(p) ? "Set out of stock" : "Set in stock"}</button></div></div>`).join("") || "<p>No products yet.</p>"}</div>
+    <div class="rf"><button class="btn gold" data-add="1">Add new product</button>
+      <button class="btn" data-exp="1">Export for website</button>
+      <button class="btn ghost" data-c="1" style="color:var(--pine);border-color:var(--pine)">Close</button>
+      <p class="hint">Export downloads products.json. Put it in your website folder next to index.html so every customer sees your changes.</p></div>`;
+  $("cp").classList.add("open");
+}
+$("cpBtn").onclick = openCP;
+$("addBtn").onclick = () => openEdit(null);
+$("cpc").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  if (d.c) $("cp").classList.remove("open");
+  else if (d.e) openEdit(d.e);
+  else if (d.t) toggleStock(d.t);
+  else if (d.add) openEdit(null);
+  else if (d.exp){
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(products)], {type:"application/json"}));
+    a.download = "products.json"; document.body.appendChild(a); a.click(); a.remove();
+    toast("products.json downloaded");
+  }
+});
+
+function openEdit(id){
+  editId = id; newPic = null;
+  const p = id ? find(id) : {name:"", price:DEFAULT_PRICE, pic:""};
+  $("edc").innerHTML = `<div class="rh"><h3>${id ? "Edit product" : "Add new product"}</h3><small>Saved in this browser. Use Export to publish.</small></div>
+    <div class="rb"><div class="prev"><img id="edPrev" src="${p.pic}" alt="Picture preview" ${p.pic ? "" : "hidden"}></div>
+      <div class="field"><label for="edPic">${id ? "Change picture" : "Picture"}</label><input id="edPic" type="file" accept="image/*"></div>
+      <div class="field"><label for="edName">Product name</label><input id="edName" maxlength="40" value="${esc(p.name)}" placeholder="e.g. Red Bow Wreath"></div>
+      <div class="field"><label for="edPrice">Price (BZ$)</label><input id="edPrice" type="number" min="0" step="0.01" inputmode="decimal" value="${p.price}"></div></div>
+    <div class="rf"><button class="btn gold" data-s="1">${id ? "Save changes" : "Add product"}</button>
+      ${id ? `<button class="btn ghost" data-x="1" style="color:var(--berry);border-color:var(--berry)">Delete product</button>` : ""}
       <button class="btn ghost" data-c="1" style="color:var(--pine);border-color:var(--pine)">Cancel</button></div>`;
   $("ed").classList.add("open");
 }
@@ -620,10 +671,10 @@ $("edc").addEventListener("change", e => {
   const rd = new FileReader();
   rd.onload = () => { const im = new Image();
     im.onload = () => {
-      const sc = Math.min(1, 900 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+      const sc = Math.min(1, 800 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
       cv.width = Math.round(im.width * sc); cv.height = Math.round(im.height * sc);
       cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
-      newPic = cv.toDataURL("image/jpeg", .82); $("edPrev").src = newPic;
+      newPic = cv.toDataURL("image/jpeg", .8); $("edPrev").src = newPic; $("edPrev").hidden = false;
     };
     im.onerror = () => toast("That file is not a picture");
     im.src = rd.result; };
@@ -633,23 +684,33 @@ $("edc").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   const d = b.dataset;
   if (d.c){ $("ed").classList.remove("open"); return; }
-  if (d.x){ delete names[d.x]; delete prices[d.x]; delete pics[d.x]; saveAll(); $("ed").classList.remove("open"); render(); updCount(); toast("Reset to original"); return; }
+  const afterSave = m => { $("ed").classList.remove("open"); render(); updCount(); if ($("cp").classList.contains("open")) openCP(); toast(m); };
+  if (d.x){
+    const p = find(editId);
+    if (!p || !confirm('Delete "' + p.name + '"? This cannot be undone.')) return;
+    const backup = JSON.stringify(products);
+    products = products.filter(x => x.id !== editId); delete cart[editId]; saveCart();
+    if (!saveProducts()){ products = JSON.parse(backup); return toast("Could not save. Try again."); }
+    return afterSave("Product deleted");
+  }
   if (d.s){
-    const i = d.s, nm = $("edName").value.replace(/[<>&"']/g, "").trim(), pr = parseFloat($("edPrice").value);
+    const nm = $("edName").value.trim().slice(0,40), pr = parseFloat($("edPrice").value);
     if (!nm) return toast("Please enter a name");
     if (isNaN(pr) || pr < 0) return toast("Enter a valid price");
-    const oldPic = pics[i];
-    names[i] = nm; prices[i] = pr; if (newPic) pics[i] = newPic;
-    if (!saveAll()){
-      if (newPic){ if (oldPic === undefined) delete pics[i]; else pics[i] = oldPic; }
-      return toast("Not enough space to save this picture. Try a smaller one.");
-    }
-    $("ed").classList.remove("open"); render(); updCount(); toast("Saved");
+    if (!editId && !newPic) return toast("Please choose a picture");
+    const backup = JSON.stringify(products);
+    if (editId){ const p = find(editId); p.name = nm; p.price = pr; if (newPic) p.pic = newPic; }
+    else products.unshift({id:"n" + Date.now(), name:nm, price:pr, pic:newPic, stock:true});
+    if (!saveProducts()){ products = JSON.parse(backup); return toast("Not enough space to save this picture. Try a smaller one."); }
+    afterSave(editId ? "Saved" : "Product added");
   }
 });
 
 /* ---------- Enter site ---------- */
-function enter(){
+async function enter(){
+  await ready;
+  const local = isAdmin() ? store.get("products_admin") : null;
+  products = Array.isArray(local) ? local : JSON.parse(JSON.stringify(base));
   $("login").hidden = true; $("app").hidden = false;
   $("who").textContent = isAdmin() ? "Owner" : session.email;
   $("adminbar").hidden = !isAdmin();
@@ -663,7 +724,7 @@ const nav = $("nav"), mb = $("menuBtn");
 mb.onclick = () => mb.setAttribute("aria-expanded", nav.classList.toggle("open"));
 nav.querySelectorAll("a").forEach(a => a.onclick = () => { nav.classList.remove("open"); mb.setAttribute("aria-expanded","false"); });
 let cur = 0;
-const show = p => { cur = (p + order.length) % order.length; $("lbImg").src = src(order[cur]); $("lbImg").alt = nameOf(order[cur]); };
+const show = p => { if (!products.length) return; cur = (p + products.length) % products.length; $("lbImg").src = products[cur].pic; $("lbImg").alt = products[cur].name; };
 $("lbX").onclick = () => $("lb").classList.remove("open");
 $("lbP").onclick = () => show(cur-1); $("lbN").onclick = () => show(cur+1);
 $("lb").onclick = e => { if (e.target === $("lb")) $("lb").classList.remove("open"); };
