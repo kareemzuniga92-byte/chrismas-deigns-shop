@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Creative Design and Rentals BZ</title>
+<meta name="description" content="Creative Design and Rentals BZ. Browse our Christmas designs and order on WhatsApp.">
+<link rel="icon" href="logo.jpeg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{
+  --pine:#12352b;--pine-2:#1c4a3c;--berry:#a8202f;--berry-2:#8a1827;--snow:#fbf8f3;--paper:#fff;
+  --gold:#c9a24a;--ink:#1d2622;--muted:#5d6a64;--line:#e6e0d4;--ok:#1f7a4d;--out:#a8202f;
+  --serif:"Fraunces",Georgia,serif;--sans:"DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px;-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);color:var(--ink);background:var(--snow);line-height:1.6;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.wrap{width:min(1160px,92%);margin-inline:auto}
+h1,h2,h3{font-family:var(--serif);line-height:1.12;font-weight:700;letter-spacing:-.01em}
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;background:var(--berry);color:#fff;text-decoration:none;font:700 1rem var(--sans);border:2px solid var(--berry);cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--berry-2);border-color:var(--berry-2)}
+.btn.ghost{background:transparent;border-color:rgba(255,255,255,.6)}
+.btn.ghost:hover{background:rgba(255,255,255,.12)}
+.btn.small{padding:8px 18px;font-size:.88rem}
+
+/* Login */
+#login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at top,var(--pine-2),var(--pine) 70%)}
+.lcard{background:#fff;width:min(440px,100%);border-radius:18px;padding:34px 28px;text-align:center;border-top:5px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.lcard .logo{width:96px;height:96px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 14px;background:#fff}
+.lcard h1{font-size:1.6rem;color:var(--pine)}
+.lcard .sub{color:var(--muted);margin:6px 0 22px;font-size:.98rem}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#f1ece2;border-radius:999px;padding:4px;margin-bottom:22px}
+.tabs button{border:0;background:none;padding:10px;border-radius:999px;font:700 .95rem var(--sans);color:var(--muted);cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--pine);color:#fff}
+.field{text-align:left;margin-bottom:14px}
+.field label{display:block;font-weight:700;font-size:.9rem;margin-bottom:5px}
+.field input{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;font:1rem var(--sans);background:#fff}
+.field input:focus{border-color:var(--pine);outline:none;box-shadow:0 0 0 3px rgba(201,162,74,.35)}
+.lcard .btn{width:100%;margin-top:6px}
+.err{color:var(--out);font-size:.92rem;min-height:1.4em;margin-top:10px}
+#gbtn{display:flex;justify-content:center;margin-bottom:6px}
+.note{color:var(--muted);font-size:.82rem;margin-top:16px}
+
+/* Header */
+header{position:sticky;top:0;z-index:50;background:rgba(18,53,43,.97);border-bottom:2px solid var(--gold)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:70px;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;font:700 1.05rem/1.15 var(--serif);min-width:0}
+.brand img{width:46px;height:46px;flex:none;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:#fff}
+nav{display:flex;align-items:center;gap:22px}
+nav a{color:#e9efe9;text-decoration:none;font-weight:500;font-size:.95rem}
+nav a:hover{color:var(--gold)}
+nav .btn{color:#fff}
+.who{color:#cfdcd4;font-size:.85rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.out-btn{background:none;border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:999px;padding:7px 16px;font:600 .85rem var(--sans);cursor:pointer}
+.out-btn:hover{background:rgba(255,255,255,.12)}
+.menu-btn{display:none;background:none;border:0;color:#fff;font-size:1.8rem;cursor:pointer;padding:4px 8px}
+.adminbar{background:var(--gold);color:#2b2208;text-align:center;font-weight:700;font-size:.92rem;padding:8px 12px}
+
+/* Hero */
+.hero{background:var(--pine);color:#fff}
+.hero .wrap{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;padding:80px 0 90px}
+.hero h1{font-size:clamp(2.2rem,5vw,4.1rem);margin-bottom:20px}
+.hero p{font-size:1.12rem;color:#d3e0d8;max-width:46ch;margin-bottom:32px}
+.actions{display:flex;gap:14px;flex-wrap:wrap}
+.collage{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.collage img{width:100%;height:100%;object-fit:cover;border-radius:14px;border:3px solid rgba(255,255,255,.9);background:#fff}
+.collage .tall{grid-row:span 2;aspect-ratio:3/4.2}
+.collage .sq{aspect-ratio:1}
+.trust{background:var(--pine-2);color:#e9efe9}
+.trust ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);padding:18px 0;text-align:center;font-weight:500}
+.trust li{border-right:1px solid rgba(255,255,255,.18);padding:0 10px}
+.trust li:last-child{border:0}
+
+section{padding:88px 0}
+.head{max-width:620px;margin-bottom:40px}
+.head h2{font-size:clamp(1.8rem,3.6vw,2.7rem);margin-bottom:10px;color:var(--pine)}
+.head p{color:var(--muted);font-size:1.06rem}
+
+/* Gallery */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px}
+.filters button{border:1.5px solid var(--pine);background:#fff;color:var(--pine);padding:8px 18px;border-radius:999px;font:700 .9rem var(--sans);cursor:pointer}
+.filters button[aria-pressed=true]{background:var(--pine);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.pic{position:relative;aspect-ratio:4/5;background:#f1ece2}
+.pic button{border:0;padding:0;background:none;width:100%;height:100%;cursor:zoom-in;overflow:hidden;display:block}
+.pic img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.pic button:hover img{transform:scale(1.04)}
+.card.sold .pic img{filter:grayscale(.85) brightness(.9)}
+.badge{position:absolute;top:12px;left:12px;padding:5px 12px;border-radius:999px;color:#fff;font:700 .8rem var(--sans);background:var(--ok);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.sold .badge{background:var(--out)}
+.info{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.info h3{font:700 1.02rem var(--sans)}
+.info .order{color:var(--berry);font-weight:700;font-size:.92rem;text-decoration:none}
+.info .order:hover{text-decoration:underline}
+.sold .order{color:var(--muted);pointer-events:none;text-decoration:none}
+.tog{width:100%;border:1.5px dashed var(--gold);background:#fffaf0;color:#2b2208;border-radius:10px;padding:9px;font:700 .88rem var(--sans);cursor:pointer}
+.tog:hover{background:#fdf1d4}
+
+/* About / steps / contact */
+.about{background:#fff;border-block:1px solid var(--line)}
+.about .wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:center}
+.about img{width:min(320px,100%);aspect-ratio:1;object-fit:cover;border-radius:50%;border:6px solid var(--gold);margin-inline:auto;background:#fff}
+.about h2{font-size:clamp(1.8rem,3.4vw,2.5rem);color:var(--pine);margin-bottom:16px}
+.about p{color:var(--muted);margin-bottom:12px;font-size:1.04rem}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px 26px}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--berry);color:#fff;font:700 1.15rem var(--serif);margin-bottom:14px}
+.steps h3{font-size:1.2rem;margin-bottom:6px;color:var(--pine)}
+.steps p{color:var(--muted)}
+.contact{background:var(--pine);color:#fff;text-align:center}
+.contact h2{font-size:clamp(1.9rem,4vw,2.9rem);margin-bottom:12px}
+.contact p{color:#d3e0d8;max-width:52ch;margin:0 auto 26px;font-size:1.08rem}
+.phone{display:block;margin-top:22px;font:700 1.5rem var(--serif);color:#fff;text-decoration:none}
+.phone:hover{color:var(--gold)}
+footer{background:#0c241d;color:#9fb3a9;text-align:center;padding:24px 0 calc(24px + env(safe-area-inset-bottom));font-size:.9rem}
+footer img{width:40px;height:40px;border-radius:50%;object-fit:cover;margin:0 auto 10px;border:2px solid var(--gold)}
+
+/* Lightbox */
+.lb{position:fixed;inset:0;background:rgba(8,20,16,.93);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.lb.open{display:flex}
+.lb img{max-height:86vh;max-width:min(94vw,900px);border-radius:10px;object-fit:contain}
+.lb button{position:absolute;background:rgba(255,255,255,.16);color:#fff;border:0;width:46px;height:46px;border-radius:50%;font-size:1.6rem;cursor:pointer}
+.lb .x{top:16px;right:16px}.lb .p{left:12px}.lb .n{right:12px}
+
+@media (max-width:900px){
+  .hero .wrap,.about .wrap{grid-template-columns:1fr;gap:36px}
+  .hero .wrap{padding:48px 0 56px}
+  .steps{grid-template-columns:1fr}
+  .trust ul{grid-template-columns:1fr;gap:4px}.trust li{border:0}
+  section{padding:60px 0}
+  .menu-btn{display:block}
+  nav{position:absolute;top:70px;left:0;right:0;background:var(--pine);flex-direction:column;align-items:flex-start;padding:20px 5%;gap:16px;display:none;border-bottom:2px solid var(--gold)}
+  nav.open{display:flex}
+  .brand span{font-size:.95rem}
+}
+@media (max-width:520px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .info{padding:10px 12px}.info h3{font-size:.92rem}
+  .badge{top:8px;left:8px;font-size:.72rem;padding:4px 9px}
+  .actions .btn{width:100%;text-align:center}
+  .collage{gap:8px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="lcard">
+    <img class="logo" src="logo.jpeg" alt="Creative Design and Rentals BZ logo">
+    <h1>Creative Design and Rentals BZ</h1>
+    <p class="sub">Sign in to browse the collection and place orders.</p>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tabC" aria-selected="true">Customer</button>
+      <button role="tab" id="tabA" aria-selected="false">Admin</button>
+    </div>
+    <div id="pC">
+      <div id="gbtn"></div>
+      <form id="gmailForm" novalidate>
+        <div class="field"><label for="gmail">Gmail address</label>
+          <input id="gmail" type="email" inputmode="email" autocomplete="email" placeholder="yourname@gmail.com"></div>
+        <button class="btn" type="submit">Continue</button>
+      </form>
+    </div>
+    <form id="pA" hidden novalidate>
+      <div class="field"><label for="au">Username</label><input id="au" autocomplete="username"></div>
+      <div class="field"><label for="ap">Password</label><input id="ap" type="password" autocomplete="current-password"></div>
+      <button class="btn" type="submit">Sign in as admin</button>
+    </form>
+    <p class="err" id="err" role="alert"></p>
+    <p class="note">Creative Design and Rentals BZ &middot; WhatsApp 616-5591</p>
+  </div>
+</div>
+
+<!-- SITE -->
+<div id="app" hidden>
+  <header>
+    <div class="wrap bar">
+      <a class="brand" href="#top"><img src="logo.jpeg" alt="Creative Design and Rentals BZ logo"><span>Creative Design and Rentals BZ</span></a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+      <nav id="nav">
+        <a href="#collection">Collection</a>
+        <a href="#about">About</a>
+        <a href="#order">How to order</a>
+        <a class="btn small" href="#contact">Contact us</a>
+        <span class="who" id="who"></span>
+        <button class="out-btn" id="logout">Log out</button>
+      </nav>
+    </div>
+  </header>
+  <div class="adminbar" id="adminbar" hidden>Admin mode: use the button under each design to mark it In stock or Out of stock.</div>
+
+  <main id="top">
+    <div class="hero">
+      <div class="wrap">
+        <div>
+          <h1>Creative designs and rentals for every celebration</h1>
+          <p>Beautiful Christmas designs for your home, your table and your gifts. Pick your favorites and order in minutes on WhatsApp.</p>
+          <div class="actions">
+            <a class="btn" href="#collection">View collection</a>
+            <a class="btn ghost wa" href="#" target="_blank" rel="noopener">Order on WhatsApp</a>
+          </div>
+        </div>
+        <div class="collage" aria-hidden="true">
+          <img class="tall" src="WhatsApp%20Image%202026-10-21%20at%2010.08.22%20PM.jpeg" alt="">
+          <img class="sq" src="WhatsApp%20Image%202026-10-21%20at%2010.14.06%20PM.jpeg" alt="">
+          <img class="sq" src="WhatsApp%20Image%202026-10-21%20at%2010.16.15%20PM.jpeg" alt="">
+        </div>
+      </div>
+      <div class="trust"><div class="wrap"><ul>
+        <li>Made with care</li><li>Custom orders welcome</li><li>Easy ordering on WhatsApp</li>
+      </ul></div></div>
+    </div>
+
+    <section id="collection">
+      <div class="wrap">
+        <div class="head">
+          <h2>The collection</h2>
+          <p>Tap a design to see it larger. Items marked In stock are ready to order.</p>
+        </div>
+        <div class="filters" id="filters">
+          <button data-f="all" aria-pressed="true">All</button>
+          <button data-f="in" aria-pressed="false">In stock</button>
+          <button data-f="out" aria-pressed="false">Out of stock</button>
+        </div>
+        <div class="grid" id="grid"></div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="wrap">
+        <img src="logo.jpeg" alt="Creative Design and Rentals BZ logo">
+        <div>
+          <h2>Designs with a personal touch</h2>
+          <p>Creative Design and Rentals BZ makes designs that bring warmth to your home and joy to the people you give them to.</p>
+          <p>Want different colors, a name added, or a size that fits your space? Tell us and we will make it work.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="order">
+      <div class="wrap">
+        <div class="head"><h2>How to order</h2><p>Ordering is simple. No payment is taken on this site.</p></div>
+        <ol class="steps">
+          <li><h3>Choose a design</h3><p>Browse the collection and find one marked In stock.</p></li>
+          <li><h3>Message us</h3><p>Tap Order on a design. WhatsApp opens with your message ready to send.</p></li>
+          <li><h3>Confirm and receive</h3><p>We confirm the price, any changes and the delivery or pickup details.</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="wrap">
+        <h2>Ready to order?</h2>
+        <p>Send us a message with the design you want and we will reply as soon as we can. Order early so everything is ready in time.</p>
+        <a class="btn wa" href="#" target="_blank" rel="noopener">Message us on WhatsApp</a>
+        <a class="phone wa" href="#" target="_blank" rel="noopener">616-5591</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap"><img src="logo.jpeg" alt="">&copy; <span id="yr"></span> Creative Design and Rentals BZ. All rights reserved.</div>
+  </footer>
+
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Design preview">
+    <button class="x" id="lbX" aria-label="Close">&times;</button>
+    <button class="p" id="lbP" aria-label="Previous design">&#8249;</button>
+    <img id="lbImg" src="" alt="">
+    <button class="n" id="lbN" aria-label="Next design">&#8250;</button>
+  </div>
+</div>
+
+<script>
+/* ====== SETTINGS ====== */
+const PHONE = "5016165591";   // 501 = Belize country code
+const ADMIN_USER = "ADMIN";
+const ADMIN_HASH = "9935e45c0d69ac53211c3bd13cddd36691a1872a70082ba8d574aeb587de1a91"; // SHA-256 of the admin password
+const GOOGLE_CLIENT_ID = "";  // Paste your Google OAuth Client ID here to turn on the real "Sign in with Google" button
+/* ====================== */
+
+const $ = id => document.getElementById(id);
+const files = [
+  "WhatsApp Image 2026-10-21 at 10.08.22 PM.jpeg","WhatsApp Image 2026-10-21 at 10.08.22 PM (1).jpeg",
+  "WhatsApp Image 2026-10-21 at 10.08.22 PM (2).jpeg","WhatsApp Image 2026-10-21 at 10.08.22 PM (3).jpeg",
+  "WhatsApp Image 2026-10-21 at 10.08.22 PM (4).jpeg","WhatsApp Image 2026-10-21 at 10.14.06 PM.jpeg",
+  "WhatsApp Image 2026-10-21 at 10.14.23 PM.jpeg","WhatsApp Image 2026-10-21 at 10.15.08 PM.jpeg",
+  "WhatsApp Image 2026-10-21 at 10.16.15 PM.jpeg","WhatsApp Image 2026-10-21 at 10.16.52 PM.jpeg",
+  "WhatsApp Image 2026-10-21 at 10.17.19 PM.jpeg","WhatsApp Image 2026-10-21 at 10.18.01 PM.jpeg",
+  "WhatsApp Image 2026-10-21 at 10.18.44 PM.jpeg","WhatsApp Image 2026-10-21 at 10.19.05 PM.jpeg",
+  "WhatsApp Image 2026-10-21 at 10.19.31 PM.jpeg","WhatsApp Image 2026-10-21 at 10.19.51 PM.jpeg"
+];
+const order = [7,2,12,0,9,4,14,1,10,5,15,3,8,13,6,11]; // mixed display order
+
+/* Safe storage */
+const store = {
+  get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+let stock = store.get("stock") || {};
+let session = store.get("session");
+let filter = "all";
+
+const wa = t => `https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
+const isAdmin = () => session && session.role === "admin";
+const inStock = i => stock[i] !== false;
+
+/* ---------- Login ---------- */
+const err = m => $("err").textContent = m || "";
+function tab(admin){
+  $("tabC").setAttribute("aria-selected", !admin); $("tabA").setAttribute("aria-selected", admin);
+  $("pC").hidden = admin; $("pA").hidden = !admin; err();
+}
+$("tabC").onclick = () => tab(false);
+$("tabA").onclick = () => tab(true);
+
+function signIn(s){ session = s; store.set("session", s); enter(); }
+
+$("gmailForm").onsubmit = e => {
+  e.preventDefault();
+  const v = $("gmail").value.trim().toLowerCase();
+  if (!/^[a-z0-9._%+-]+@gmail\.com$/.test(v)) return err("Enter a valid Gmail address ending in @gmail.com.");
+  signIn({role:"customer", email:v});
+};
+
+async function sha(t){
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join("");
+}
+$("pA").onsubmit = async e => {
+  e.preventDefault();
+  let ok = false;
+  try { ok = $("au").value.trim() === ADMIN_USER && (await sha($("ap").value)) === ADMIN_HASH; }
+  catch(x){ return err("Admin sign in needs a secure page (https or localhost)."); }
+  if (!ok) return err("Wrong username or password.");
+  signIn({role:"admin", email:"ADMIN"});
+};
+
+function googleInit(){
+  if (!GOOGLE_CLIENT_ID || !window.google || !google.accounts) return;
+  $("gmailForm").hidden = true;
+  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID, callback: r => {
+    try{
+      const p = JSON.parse(decodeURIComponent(escape(atob(r.credential.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")))));
+      if (!p.email || !p.email.endsWith("@gmail.com") || p.email_verified === false) return err("Please use a Gmail account.");
+      signIn({role:"customer", email:p.email});
+    }catch(x){ err("Google sign in failed. Try again."); }
+  }});
+  google.accounts.id.renderButton($("gbtn"), {theme:"outline", size:"large", text:"signin_with", width:300});
+}
+window.addEventListener("load", () => setTimeout(googleInit, 400));
+
+$("logout").onclick = () => {
+  session = null; store.set("session", null);
+  $("app").hidden = true; $("login").hidden = false; $("lb").classList.remove("open");
+  document.body.scrollTop = 0; scrollTo(0,0);
+};
+
+/* ---------- Site ---------- */
+function render(){
+  const g = $("grid"); g.innerHTML = "";
+  order.forEach((idx, pos) => {
+    const s = inStock(idx);
+    if ((filter === "in" && !s) || (filter === "out" && s)) return;
+    const n = pos + 1, src = encodeURI(files[idx]);
+    const c = document.createElement("article");
+    c.className = "card" + (s ? "" : " sold");
+    c.innerHTML =
+      `<div class="pic"><button type="button" data-v="${idx}" aria-label="View design ${n} larger">
+         <img src="${src}" alt="Design ${n}" loading="lazy"></button>
+         <span class="badge">${s ? "In stock" : "Out of stock"}</span></div>
+       <div class="info"><h3>Design ${n}</h3>
+         ${s ? `<a class="order" href="${wa(`Hi! I'd like to order Design ${n}.`)}" target="_blank" rel="noopener">Order</a>`
+             : `<span class="order">Unavailable</span>`}
+         ${isAdmin() ? `<button class="tog" data-t="${idx}">Mark as ${s ? "Out of stock" : "In stock"}</button>` : ""}</div>`;
+    g.appendChild(c);
+  });
+  if (!g.children.length) g.innerHTML = '<p style="color:var(--muted)">No designs match this filter.</p>';
+}
+
+function enter(){
+  $("login").hidden = true; $("app").hidden = false;
+  $("who").textContent = isAdmin() ? "Admin" : session.email;
+  $("adminbar").hidden = !isAdmin();
+  document.querySelectorAll(".wa").forEach(a => a.href = wa("Hi! I'd like to place an order with Creative Design and Rentals BZ."));
+  $("yr").textContent = new Date().getFullYear();
+  render(); scrollTo(0,0);
+}
+
+$("grid").addEventListener("click", e => {
+  const t = e.target.closest("[data-t]");
+  if (t && isAdmin()) { const i = t.dataset.t; stock[i] = !inStock(i); store.set("stock", stock); render(); return; }
+  const v = e.target.closest("[data-v]");
+  if (v) { show(order.indexOf(+v.dataset.v)); $("lb").classList.add("open"); $("lbX").focus(); }
+});
+$("filters").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  filter = b.dataset.f;
+  $("filters").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  render();
+});
+
+const nav = $("nav"), mb = $("menuBtn");
+mb.onclick = () => mb.setAttribute("aria-expanded", nav.classList.toggle("open"));
+nav.querySelectorAll("a").forEach(a => a.onclick = () => { nav.classList.remove("open"); mb.setAttribute("aria-expanded","false"); });
+
+/* Lightbox */
+let cur = 0;
+const show = p => { cur = (p + order.length) % order.length; $("lbImg").src = encodeURI(files[order[cur]]); $("lbImg").alt = "Design " + (cur+1); };
+const closeLb = () => $("lb").classList.remove("open");
+$("lbX").onclick = closeLb; $("lbP").onclick = () => show(cur-1); $("lbN").onclick = () => show(cur+1);
+$("lb").onclick = e => { if (e.target === $("lb")) closeLb(); };
+document.addEventListener("keydown", e => {
+  if (!$("lb").classList.contains("open")) return;
+  if (e.key === "Escape") closeLb();
+  if (e.key === "ArrowLeft") show(cur-1);
+  if (e.key === "ArrowRight") show(cur+1);
+});
+
+if (session) enter();
+</script>
+</body>
+</html>
