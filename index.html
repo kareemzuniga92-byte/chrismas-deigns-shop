@@ -610,7 +610,13 @@ $("rc").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   if (b.id === "backCart"){ $("co").classList.remove("open"); openCart(); }
   if (b.id === "sendWa"){
-    const nm = $("cname").value.trim();
+   const nm = $("cname").value.trim();
+const delivery = $("deliveryMethod").value; 
+    if (!delivery){
+  $("deliveryMethod").focus();
+  return toast("Please select a pickup or delivery option");
+}
+
     if (!nm){ $("cname").focus(); return toast("Please enter your name first"); }
     const ks = keys(), em = session && session.role !== "admin" ? session.email : "";
     const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
