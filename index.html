@@ -194,6 +194,10 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 .thanks{text-align:center;padding:34px 24px}
 .thanks h3{color:var(--pine);font-size:1.5rem;margin-bottom:8px}
 
+.prev{background:#f4efe5;border-radius:10px;margin-bottom:12px;display:grid;place-items:center;padding:8px}
+.prev img{max-height:220px;object-fit:contain}
+.rb .field input[type=file]{padding:9px}
+
 /* Lightbox */
 .lb{position:fixed;inset:0;background:rgba(8,20,16,.93);display:none;align-items:center;justify-content:center;z-index:120;padding:20px}
 .lb.open{display:flex}
@@ -281,7 +285,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
     </div>
     <div class="lights"></div>
   </header>
-  <div class="adminbar" id="adminbar" hidden>Owner tools are on. Use the buttons under each design to change stock and price.</div>
+  <div class="adminbar" id="adminbar" hidden>Owner tools are on. Use Edit product under each design to change its picture, name and price, or mark it in or out of stock.</div>
 
   <main id="top">
     <div class="hero">
@@ -366,6 +370,11 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
     <div class="dbody" id="dbody"></div>
   </aside>
 
+  <!-- Owner edit -->
+  <div class="modal" id="ed" role="dialog" aria-modal="true" aria-label="Edit product">
+    <div class="rc" id="edc"></div>
+  </div>
+
   <!-- Checkout receipt -->
   <div class="modal" id="co" role="dialog" aria-modal="true" aria-label="Checkout">
     <div class="rc" id="rc"></div>
@@ -403,16 +412,18 @@ const files = [
   "WhatsApp Image 2026-10-21 at 10.19.31 PM.jpeg","WhatsApp Image 2026-10-21 at 10.19.51 PM.jpeg"
 ];
 const order = [7,2,12,0,9,4,14,1,10,5,15,3,8,13,6,11];
-const src = i => encodeURI(files[i]);
-const nameOf = i => "Design " + (order.indexOf(i) + 1);
+const src = i => pics[i] || encodeURI(files[i]);
+const nameOf = i => names[i] || "Design " + (order.indexOf(i) + 1);
 const money = n => "BZ$" + n.toFixed(2);
 
 const store = {
   get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},
-  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 };
 let stock = store.get("stock") || {};
 let prices = store.get("prices") || {};
+let names = store.get("names") || {};
+let pics = store.get("pics") || {};
 let cart = store.get("cart") || {};
 let session = store.get("session");
 let filter = "all", receiptNo = "";
@@ -486,13 +497,13 @@ function render(){
     const c = document.createElement("article");
     c.className = "card" + (s ? "" : " sold");
     c.innerHTML =
-      `<div class="pic"><button type="button" data-v="${idx}" aria-label="View design ${n} larger"><img src="${src(idx)}" alt="Design ${n}" loading="lazy"></button>
+      `<div class="pic"><button type="button" data-v="${idx}" aria-label="View ${nameOf(idx)} larger"><img src="${src(idx)}" alt="${nameOf(idx)}" loading="lazy"></button>
          <span class="badge">${s ? "In stock" : "Out of stock"}</span>
          <img class="mark" src="logo.jpeg" alt="${SHOP} logo"></div>
        <div class="info">
-         <div class="row"><h3>Design ${n}</h3><span class="price">${money(priceOf(idx))}</span></div>
+         <div class="row"><h3>${nameOf(idx)}</h3><span class="price">${money(priceOf(idx))}</span></div>
          ${s ? `<button class="btn" data-a="${idx}">Add to cart</button>` : `<button class="btn" disabled>Out of stock</button>`}
-         ${isAdmin() ? `<div class="tools"><button class="tog" data-t="${idx}">${s ? "Mark out of stock" : "Mark in stock"}</button><button class="tog" data-p="${idx}">Set price</button></div>` : ""}
+         ${isAdmin() ? `<div class="tools"><button class="tog" data-t="${idx}">${s ? "Mark out of stock" : "Mark in stock"}</button><button class="tog" data-e="${idx}">Edit product</button></div>` : ""}
        </div>`;
     g.appendChild(c);
   });
@@ -503,12 +514,8 @@ $("grid").addEventListener("click", e => {
   if (a){ const i = a.dataset.a; cart[i] = Math.min((cart[i] || 0) + 1, 20); saveCart(); updCount(); toast(nameOf(+i) + " added to cart"); return; }
   const t = e.target.closest("[data-t]");
   if (t && isAdmin()){ const i = t.dataset.t; stock[i] = !inStock(i); store.set("stock", stock); if (!stock[i]) delete cart[i]; saveCart(); updCount(); render(); return; }
-  const p = e.target.closest("[data-p]");
-  if (p && isAdmin()){
-    const i = p.dataset.p, v = prompt("New price in BZ$ for " + nameOf(+i) + ":", priceOf(+i));
-    if (v !== null && !isNaN(parseFloat(v)) && parseFloat(v) >= 0){ prices[i] = parseFloat(v); store.set("prices", prices); render(); updCount(); }
-    return;
-  }
+  const p = e.target.closest("[data-e]");
+  if (p && isAdmin()){ openEdit(+p.dataset.e); return; }
   const v = e.target.closest("[data-v]");
   if (v){ show(order.indexOf(+v.dataset.v)); $("lb").classList.add("open"); $("lbX").focus(); }
 });
@@ -543,7 +550,7 @@ function drawCart(){
        <button class="btn gold" id="goCo">Proceed to checkout</button></div>`;
 }
 function openCart(){ drawCart(); $("drawer").classList.add("open"); $("scrim").classList.add("open"); }
-function closeAll(){ $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("co").classList.remove("open"); $("lb").classList.remove("open"); }
+function closeAll(){ $("ed").classList.remove("open"); $("drawer").classList.remove("open"); $("scrim").classList.remove("open"); $("co").classList.remove("open"); $("lb").classList.remove("open"); }
 $("openCart").onclick = openCart;
 $("closeCart").onclick = $("scrim").onclick = closeAll;
 $("dbody").addEventListener("click", e => {
@@ -593,6 +600,54 @@ $("rc").addEventListener("click", e => {
   if (b.id === "doneBtn") closeAll();
 });
 
+/* ---------- Owner: edit product ---------- */
+let newPic = null;
+const saveAll = () => { const a = store.set("names",names), b = store.set("prices",prices), c = store.set("pics",pics); return a && b && c; };
+function openEdit(i){
+  newPic = null;
+  $("edc").innerHTML = `<div class="rh"><h3>Edit product</h3><small>Changes are saved in this browser</small></div>
+    <div class="rb"><div class="prev"><img id="edPrev" src="${src(i)}" alt="Current picture"></div>
+      <div class="field"><label for="edPic">Change picture</label><input id="edPic" type="file" accept="image/*"></div>
+      <div class="field"><label for="edName">Product name</label><input id="edName" maxlength="40" value="${nameOf(i)}"></div>
+      <div class="field"><label for="edPrice">Price (BZ$)</label><input id="edPrice" type="number" min="0" step="0.01" inputmode="decimal" value="${priceOf(i)}"></div></div>
+    <div class="rf"><button class="btn gold" data-s="${i}">Save changes</button>
+      <button class="btn ghost" data-x="${i}" style="color:var(--pine);border-color:var(--pine)">Reset to original</button>
+      <button class="btn ghost" data-c="1" style="color:var(--pine);border-color:var(--pine)">Cancel</button></div>`;
+  $("ed").classList.add("open");
+}
+$("edc").addEventListener("change", e => {
+  if (e.target.id !== "edPic" || !e.target.files[0]) return;
+  const rd = new FileReader();
+  rd.onload = () => { const im = new Image();
+    im.onload = () => {
+      const sc = Math.min(1, 900 / Math.max(im.width, im.height)), cv = document.createElement("canvas");
+      cv.width = Math.round(im.width * sc); cv.height = Math.round(im.height * sc);
+      cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+      newPic = cv.toDataURL("image/jpeg", .82); $("edPrev").src = newPic;
+    };
+    im.onerror = () => toast("That file is not a picture");
+    im.src = rd.result; };
+  rd.readAsDataURL(e.target.files[0]);
+});
+$("edc").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const d = b.dataset;
+  if (d.c){ $("ed").classList.remove("open"); return; }
+  if (d.x){ delete names[d.x]; delete prices[d.x]; delete pics[d.x]; saveAll(); $("ed").classList.remove("open"); render(); updCount(); toast("Reset to original"); return; }
+  if (d.s){
+    const i = d.s, nm = $("edName").value.replace(/[<>&"']/g, "").trim(), pr = parseFloat($("edPrice").value);
+    if (!nm) return toast("Please enter a name");
+    if (isNaN(pr) || pr < 0) return toast("Enter a valid price");
+    const oldPic = pics[i];
+    names[i] = nm; prices[i] = pr; if (newPic) pics[i] = newPic;
+    if (!saveAll()){
+      if (newPic){ if (oldPic === undefined) delete pics[i]; else pics[i] = oldPic; }
+      return toast("Not enough space to save this picture. Try a smaller one.");
+    }
+    $("ed").classList.remove("open"); render(); updCount(); toast("Saved");
+  }
+});
+
 /* ---------- Enter site ---------- */
 function enter(){
   $("login").hidden = true; $("app").hidden = false;
@@ -608,7 +663,7 @@ const nav = $("nav"), mb = $("menuBtn");
 mb.onclick = () => mb.setAttribute("aria-expanded", nav.classList.toggle("open"));
 nav.querySelectorAll("a").forEach(a => a.onclick = () => { nav.classList.remove("open"); mb.setAttribute("aria-expanded","false"); });
 let cur = 0;
-const show = p => { cur = (p + order.length) % order.length; $("lbImg").src = src(order[cur]); $("lbImg").alt = "Design " + (cur+1); };
+const show = p => { cur = (p + order.length) % order.length; $("lbImg").src = src(order[cur]); $("lbImg").alt = nameOf(order[cur]); };
 $("lbX").onclick = () => $("lb").classList.remove("open");
 $("lbP").onclick = () => show(cur-1); $("lbN").onclick = () => show(cur+1);
 $("lb").onclick = e => { if (e.target === $("lb")) $("lb").classList.remove("open"); };
