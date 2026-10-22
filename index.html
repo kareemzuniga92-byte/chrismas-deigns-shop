@@ -597,7 +597,7 @@ function openCheckout(){
   $("rc").innerHTML =
     `<div class="rh"><img src="logo.jpeg" alt="${SHOP} logo"><h3>${SHOP}</h3><small>Receipt</small></div>
      <div class="rb"><div class="meta"><span>Receipt #: <b>${receiptNo}</b></span><span>${when}</span></div>
-       <div class="field"><label for="cname">Your name</label><input id="cname" autocomplete="name" placeholder="Name for the order"></div>
+       <div class="field">   <label for="cname">Your name</label>   <input id="cname" autocomplete="name" placeholder="Name for the order"> </div>  <div class="field">   <label for="deliveryMethod">Pickup / Delivery Method</label>   <select id="deliveryMethod">     <option value="">Select an option</option>     <option value="Self Pickup - San Ignacio, Cayo">       Self Pickup (San Ignacio, Cayo)     </option>     <option value="BPMS Delivery">       BPMS Delivery     </option>     <option value="IDS Delivery">       IDS Delivery     </option>   </select> </div>  <div style="background:#fff3cf;border:1px solid #d4a83f;padding:12px;border-radius:10px;margin:15px 0;">   <strong>IMPORTANT:</strong><br>   A 50% deposit is required before any order can be confirmed. </div>
        <table class="rl">${ks.map(k => `<tr><td>${esc(find(k).name)} &times; ${cart[k]}</td><td>${money(find(k).price*cart[k])}</td></tr>`).join("")}</table>
        <div class="rt"><span>Total</span><span>${money(total())}</span></div></div>
      <div class="rf"><button class="btn gold" id="sendWa">Send order on WhatsApp</button>
