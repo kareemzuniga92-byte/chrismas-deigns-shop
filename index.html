@@ -26,7 +26,7 @@ img{display:block;max-width:100%}
 .wrap{width:min(1160px,92%);margin-inline:auto}
 h1,h2,h3{font-family:var(--serif);line-height:1.12;font-weight:700;letter-spacing:-.01em}
 button{font-family:inherit}
-.btn{display:inline-block;padding:13px 26px;border-radius:999px;background:var(--berry);color:#fff;text-decoration:none;font:700 1rem var(--sans);border:2px solid var(--berry);cursor:pointer;text-align:center;transition:background .2s}
+.btn{display:inline-block;padding:13px 26px;border-radius:999px;background:var(--berry);color:#fff;text-decoration:none;font:700 1rem var(--sans);border:2px solid var(--berry);cursor:pointer;text-align:center}
 .btn:hover{background:var(--berry-2);border-color:var(--berry-2)}
 .btn.ghost{background:transparent;border-color:rgba(255,255,255,.65)}
 .btn.ghost:hover{background:rgba(255,255,255,.14)}
@@ -57,8 +57,10 @@ button{font-family:inherit}
 .lcard .sub{color:var(--muted);margin:6px 0 22px}
 .field{text-align:left;margin-bottom:14px}
 .field label{display:block;font-weight:700;font-size:.9rem;margin-bottom:5px}
-.field input{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;font:1rem var(--sans);background:#fff}
-.field input:focus{border-color:var(--pine);outline:none;box-shadow:0 0 0 3px rgba(212,168,63,.4)}
+.field input,.field select{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:10px;font:1rem var(--sans);background:#fff}
+.field input:focus,.field select:focus{border-color:var(--pine);outline:none;box-shadow:0 0 0 3px rgba(212,168,63,.4)}
+.notice{background:#fff7e6;border:1px solid #f2d89b;color:#49370d;border-radius:10px;padding:12px 14px;margin:10px 0 18px;font-size:.92rem}
+.notice ul{margin-top:8px;padding-left:18px}
 .lcard .btn{width:100%;margin-top:4px}
 .err{color:var(--out);font-size:.92rem;min-height:1.4em;margin-top:10px}
 #gbtn{display:flex;justify-content:center;margin-bottom:10px}
@@ -211,7 +213,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 .lb img{max-height:86vh;max-width:min(94vw,900px);border-radius:10px;object-fit:contain}
 .lb button{position:absolute;background:rgba(255,255,255,.16);color:#fff;border:0;width:46px;height:46px;border-radius:50%;font-size:1.6rem;cursor:pointer}
 .lb .x{top:16px;right:16px}.lb .p{left:12px}.lb .n{right:12px}
-.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--pine);color:#fff;padding:12px 22px;border-radius:999px;border:2px solid var(--gold);font-weight:600;z-index:130;opacity:0;transition:.3s;pointer-events:none;max-width:92vw;text-align:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,30px);background:var(--pine);color:#fff;padding:12px 22px;border-radius:999px;border:2px solid var(--gold);font-weight:600;z-index:120;opacity:0;transition:transform .25s,opacity .25s}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
 @media (max-width:900px){
@@ -284,7 +286,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
           <button class="out-btn" id="logout">Log out</button>
         </nav>
         <button class="cartbtn" id="openCart" aria-label="Open cart">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h2l2.3 9.6a1 1 0 0 0 1 .8h8.8a1 1 0 0 0 1-.8L20 7H7"/></svg>
           <span class="t">Cart</span><span class="n" id="cnt">0</span>
         </button>
         <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false">&#9776;</button>
@@ -412,7 +414,7 @@ const GOOGLE_CLIENT_ID = "";         // paste a Google OAuth Client ID to turn o
 /* ====================== */
 
 const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 const files = [
   "WhatsApp Image 2026-10-21 at 10.08.22 PM.jpeg","WhatsApp Image 2026-10-21 at 10.08.22 PM (1).jpeg",
   "WhatsApp Image 2026-10-21 at 10.08.22 PM (2).jpeg","WhatsApp Image 2026-10-21 at 10.08.22 PM (3).jpeg",
@@ -558,7 +560,7 @@ function updCount(){ $("cnt").textContent = count(); if ($("drawer").classList.c
 function drawCart(){
   const ks = keys(), n = count();
   if (!ks.length){
-    $("dbody").innerHTML = `<div class="items" style="grid-column:1/-1"><div class="empty"><h2 style="border:0;display:block;font-family:var(--serif)">Your cart is empty</h2><p>Add some Christmas designs to get started.</p><button class="btn" id="shopOn">Continue shopping</button></div></div>`;
+    $("dbody").innerHTML = `<div class="items" style="grid-column:1/-1"><div class="empty"><h2 style="border:0;display:block;font-family:var(--serif)">Your cart is empty</h2><p>Add some Christmas designs to begin.</p><button class="btn gold" id="shopOn">Shop the collection</button></div></div>`;
     return;
   }
   $("dbody").innerHTML =
@@ -598,6 +600,24 @@ function openCheckout(){
     `<div class="rh"><img src="logo.jpeg" alt="${SHOP} logo"><h3>${SHOP}</h3><small>Receipt</small></div>
      <div class="rb"><div class="meta"><span>Receipt #: <b>${receiptNo}</b></span><span>${when}</span></div>
        <div class="field"><label for="cname">Your name</label><input id="cname" autocomplete="name" placeholder="Name for the order"></div>
+       <div class="field"><label for="deliveryMethod">Pickup / Delivery Method</label>
+         <select id="deliveryMethod">
+           <option value="">Select an option</option>
+           <option value="Self Pickup - San Ignacio, Cayo">Self Pickup (San Ignacio, Cayo)</option>
+           <option value="BPMS Delivery">BPMS Delivery</option>
+           <option value="IDS Delivery">IDS Delivery</option>
+         </select>
+       </div>
+       <div class="notice">
+         <strong>IMPORTANT:</strong><br>
+         A 50% deposit is required before any order is confirmed.<br>
+         Customers may choose:
+         <ul style="margin-top:8px;padding-left:18px">
+           <li>Self Pickup (San Ignacio, Cayo)</li>
+           <li>BPMS Delivery</li>
+           <li>IDS Delivery</li>
+         </ul>
+       </div>
        <table class="rl">${ks.map(k => `<tr><td>${esc(find(k).name)} &times; ${cart[k]}</td><td>${money(find(k).price*cart[k])}</td></tr>`).join("")}</table>
        <div class="rt"><span>Total</span><span>${money(total())}</span></div></div>
      <div class="rf"><button class="btn gold" id="sendWa">Send order on WhatsApp</button>
@@ -611,14 +631,16 @@ $("rc").addEventListener("click", e => {
   if (b.id === "backCart"){ $("co").classList.remove("open"); openCart(); }
   if (b.id === "sendWa"){
     const nm = $("cname").value.trim();
+    const delivery = $("deliveryMethod").value.trim();
     if (!nm){ $("cname").focus(); return toast("Please enter your name first"); }
+    if (!delivery){ $("deliveryMethod").focus(); return toast("Please choose a pickup or delivery method"); }
     const ks = keys(), em = session && session.role !== "admin" ? session.email : "";
-    const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
+    const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}\nDelivery: ${delivery}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
       ks.map((k,i) => `${i+1}. ${find(k).name} x${cart[k]} - ${money(find(k).price*cart[k])}`).join("\n") +
-      `\n\n*Total: ${money(total())}*\n\nPlease confirm my order. Thank you!`;
+      `\n\n*Total: ${money(total())}*\n\n*IMPORTANT:* A 50% deposit is required before any order is confirmed.\n\nPlease confirm my order. Thank you!`;
     window.open(wa(msg), "_blank");
     cart = {}; saveCart(); updCount();
-    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${esc(nm)}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
+    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Your WhatsApp order is ready to send. Please confirm the details with us there.</p><button class="btn gold" id="doneBtn" style="margin-top:10px">Done</button></div>`;
   }
   if (b.id === "doneBtn") closeAll();
 });
@@ -629,7 +651,8 @@ function openCP(){
   $("cpc").innerHTML = `<div class="rh"><h3>Control panel</h3><small>${products.length} product${products.length === 1 ? "" : "s"}</small></div>
     <div class="rb">${products.map(p => `<div class="cpr"><img src="${p.pic}" alt="">
       <div class="cpn"><b>${esc(p.name)}</b><span>${money(p.price)} &middot; ${inStock(p) ? "In stock" : "Out of stock"}</span></div>
-      <div class="cpb"><button class="tog" data-e="${p.id}">Edit</button><button class="tog" data-t="${p.id}">${inStock(p) ? "Set out of stock" : "Set in stock"}</button></div></div>`).join("") || "<p>No products yet.</p>"}</div>
+      <div class="cpb"><button class="tog" data-e="${p.id}">Edit</button><button class="tog" data-t="${p.id}">${inStock(p) ? "Set out of stock" : "Set in stock"}</button></div></div>`).join("") || "<p style='color:var(--muted)'>No products yet.</p>"}
+      </div>
     <div class="rf"><button class="btn gold" data-add="1">Add new product</button>
       <button class="btn" data-exp="1">Export for website</button>
       <button class="btn ghost" data-c="1" style="color:var(--pine);border-color:var(--pine)">Close</button>
