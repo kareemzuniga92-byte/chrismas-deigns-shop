@@ -260,7 +260,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
         <div class="field"><label for="uid">Gmail address</label>
           <input id="uid" type="text" inputmode="email" autocomplete="username" autocapitalize="none" placeholder="yourname@gmail.com"></div>
         <div class="field" id="pw" hidden><label for="pwd">Password</label>
-          <input id="pwd" type="password" autocomplete="current-password"></div>
+          <input id="pwd" type="password" autocomplete="current-password" placeholder="Owner password"></div>
         <button class="btn" type="submit">Sign in</button>
       </form>
       <p class="err" id="err" role="alert"></p>
@@ -404,11 +404,11 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 <script>
 /* ====== SETTINGS ====== */
 const SHOP = "Creative Design and Rentals BZ";
-const PHONE = "5016165591";          // 501 = Belize country code
-const DEFAULT_PRICE = 20;            // price (BZ$) given to new products until you change it
+const PHONE = "5016165591";
+const DEFAULT_PRICE = 20;
 const ADMIN_USER = "ADMIN";
-const ADMIN_HASH = "9935e45c0d69ac53211c3bd13cddd36691a1872a70082ba8d574aeb587de1a91";
-const GOOGLE_CLIENT_ID = "";         // paste a Google OAuth Client ID to turn on the real Google button
+const ADMIN_PASSWORD = "admin123";
+const GOOGLE_CLIENT_ID = "";
 /* ====================== */
 
 const $ = id => document.getElementById(id);
@@ -431,7 +431,6 @@ const store = {
   set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}
 };
 
-/* ---------- Products ---------- */
 function defaults(){
   const oN = store.get("names")||{}, oP = store.get("prices")||{}, oPic = store.get("pics")||{}, oS = store.get("stock")||{};
   return order.map((fi,pos) => ({id:"p"+fi, name:oN[fi] || "Design "+(pos+1), price:Number(oP[fi] ?? DEFAULT_PRICE), pic:oPic[fi] || encodeURI(files[fi]), stock:oS[fi] !== false}));
@@ -454,7 +453,6 @@ const saveCart = () => store.set("cart2", cart);
 let tt;
 const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("show"), 2400); };
 
-/* ---------- Snow ---------- */
 (function(){
   const s = $("snow");
   for (let i = 0; i < 30; i++){
@@ -465,21 +463,14 @@ const toast = m => { const t = $("toast"); t.textContent = m; t.classList.add("s
   }
 })();
 
-/* ---------- Single login ---------- */
 const err = m => $("err").textContent = m || "";
 $("uid").addEventListener("input", () => { $("pw").hidden = $("uid").value.trim().toUpperCase() !== ADMIN_USER; err(); });
 function signIn(s){ session = s; store.set("session", s); enter(); }
-async function sha(t){
-  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
-  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,"0")).join("");
-}
-$("lf").onsubmit = async e => {
+$("lf").onsubmit = e => {
   e.preventDefault();
   const v = $("uid").value.trim();
   if (v.toUpperCase() === ADMIN_USER){
-    let ok = false;
-    try { ok = (await sha($("pwd").value)) === ADMIN_HASH; } catch(x){}
-    if (!ok) return err("Those details are not correct. Please try again.");
+    if ($("pwd").value !== ADMIN_PASSWORD) return err("Those details are not correct. Please try again.");
     return signIn({role:"admin", email:"Owner"});
   }
   const m = v.toLowerCase();
@@ -504,7 +495,6 @@ $("logout").onclick = () => {
   closeAll(); $("app").hidden = true; $("login").hidden = false; $("uid").value = ""; $("pwd").value = ""; $("pw").hidden = true; scrollTo(0,0);
 };
 
-/* ---------- Gallery ---------- */
 function render(){
   const g = $("grid"); g.innerHTML = "";
   products.forEach(p => {
@@ -549,7 +539,6 @@ $("filters").addEventListener("click", e => {
   render();
 });
 
-/* ---------- Cart ---------- */
 const keys = () => Object.keys(cart).filter(k => cart[k] > 0 && find(k) && inStock(find(k)));
 const total = () => keys().reduce((s,k) => s + find(k).price * cart[k], 0);
 const count = () => keys().reduce((s,k) => s + cart[k], 0);
@@ -588,7 +577,6 @@ $("dbody").addEventListener("click", e => {
   saveCart(); updCount(); drawCart();
 });
 
-/* ---------- Checkout + receipt ---------- */
 function openCheckout(){
   const d = new Date(), p = n => String(n).padStart(2,"0");
   receiptNo = "CDR-" + String(d.getFullYear()).slice(2) + p(d.getMonth()+1) + p(d.getDate()) + "-" + Math.floor(1000 + Math.random()*9000);
@@ -606,6 +594,14 @@ function openCheckout(){
            <option value="Delivery">Delivery</option>
          </select>
        </div>
+       <div class="field">
+         <label for="pickupDate">Pickup or delivery date</label>
+         <input id="pickupDate" type="date" min="${new Date().toISOString().split('T')[0]}">
+       </div>
+       <div class="field" id="deliveryAddressWrap" hidden>
+         <label for="deliveryAddress">Delivery address</label>
+         <input id="deliveryAddress" autocomplete="street-address" placeholder="Address for delivery">
+       </div>
        <table class="rl">${ks.map(k => `<tr><td>${esc(find(k).name)} &times; ${cart[k]}</td><td>${money(find(k).price*cart[k])}</td></tr>`).join("")}</table>
        <div class="rt"><span>Total</span><span>${money(total())}</span></div></div>
      <div class="rf"><button class="btn gold" id="sendWa">Send order on WhatsApp</button>
@@ -613,6 +609,12 @@ function openCheckout(){
        <p class="hint">Your receipt opens in WhatsApp. We will confirm payment and delivery or pickup with you there.</p></div>`;
   $("co").classList.add("open"); $("drawer").classList.remove("open"); $("scrim").classList.remove("open");
   $("cname").focus();
+  $("deliveryMethod").addEventListener("change", () => {
+    const wrap = $("deliveryAddressWrap");
+    const chosen = $("deliveryMethod").value;
+    wrap.hidden = chosen !== "Delivery";
+    if (chosen !== "Delivery") $("deliveryAddress").value = "";
+  });
 }
 $("rc").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
@@ -620,10 +622,14 @@ $("rc").addEventListener("click", e => {
   if (b.id === "sendWa"){
     const nm = $("cname").value.trim();
     const delivery = $("deliveryMethod").value;
+    const dateValue = $("pickupDate").value;
+    const deliveryAddress = $("deliveryAddress").value.trim();
     if (!nm){ $("cname").focus(); return toast("Please enter your name first"); }
     if (!delivery){ $("deliveryMethod").focus(); return toast("Please select a pickup/delivery method"); }
+    if (!dateValue){ $("pickupDate").focus(); return toast("Please choose a pickup or delivery date"); }
+    if (delivery === "Delivery" && !deliveryAddress){ $("deliveryAddress").focus(); return toast("Please enter the delivery address"); }
     const ks = keys(), em = session && session.role !== "admin" ? session.email : "";
-    const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}\nDelivery: ${delivery}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
+    const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}\nOrder type: ${delivery}\nPreferred date: ${dateValue}${delivery === "Delivery" ? "\nDelivery address: " + deliveryAddress : ""}${em ? "\nEmail: " + em : ""}\n\n*Items*\n` +
       ks.map((k,i) => `${i+1}. ${find(k).name} x${cart[k]} - ${money(find(k).price*cart[k])}`).join("\n") +
       `\n\n*Total: ${money(total())}*\n\nPlease confirm my order. Thank you!`;
     window.open(wa(msg), "_blank");
@@ -633,7 +639,6 @@ $("rc").addEventListener("click", e => {
   if (b.id === "doneBtn") closeAll();
 });
 
-/* ---------- Owner: control panel, add / edit / delete ---------- */
 let editId = null, newPic = null;
 function openCP(){
   $("cpc").innerHTML = `<div class="rh"><h3>Control panel</h3><small>${products.length} product${products.length === 1 ? "" : "s"}</small></div>
@@ -717,7 +722,6 @@ $("edc").addEventListener("click", e => {
   }
 });
 
-/* ---------- Enter site ---------- */
 async function enter(){
   await ready;
   const local = isAdmin() ? store.get("products_admin") : null;
@@ -730,7 +734,6 @@ async function enter(){
   render(); updCount(); scrollTo(0,0);
 }
 
-/* Menu + lightbox */
 const nav = $("nav"), mb = $("menuBtn");
 mb.onclick = () => mb.setAttribute("aria-expanded", nav.classList.toggle("open"));
 nav.querySelectorAll("a").forEach(a => a.onclick = () => { nav.classList.remove("open"); mb.setAttribute("aria-expanded","false"); });
