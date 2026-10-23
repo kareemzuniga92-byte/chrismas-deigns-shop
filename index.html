@@ -321,7 +321,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
         </div>
       </div>
       <div class="trust"><div class="wrap"><ul>
-        <li>Made with care</li><li>Custom orders welcome</li><li>Easy ordering on WhatsApp</li><li>50% deposit secures your order</li>
+        <li>Made with care</li><li>Custom orders welcome</li><li>Easy ordering on WhatsApp</li><li>50% non-refundable deposit required</li>
       </ul></div></div>
     </div>
     <div class="cane"></div>
@@ -361,9 +361,9 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
           <li><h3>Add to cart</h3><p>Pick every design you want and add it to your cart.</p></li>
           <li><h3>Check your receipt</h3><p>Review your items and total, then proceed to checkout.</p></li>
           <li><h3>Send on WhatsApp</h3><p>Your receipt opens in WhatsApp with your details filled in.</p></li>
-          <li><h3>Pay 50% deposit</h3><p>We confirm your order once the deposit is received. The balance is due at pickup or delivery.</p></li>
+          <li><h3>Pay 50% non-refundable deposit</h3><p>We confirm your order once the deposit is received. The balance is due at pickup or delivery.</p></li>
         </ol>
-        <div class="deposit-note"><strong>Please note:</strong> A 50% deposit is required before any order can be confirmed.</div>
+        <div class="deposit-note"><strong>Please note:</strong> A 50% non-refundable deposit is required to complete every order.</div>
       </div>
     </section>
 
@@ -407,7 +407,7 @@ footer img{width:42px;height:42px;border-radius:50%;object-fit:cover;margin:0 au
 const SHOP = "Creative Design and Rentals BZ";
 const PHONE = "5016165591";          // 501 = Belize country code
 const DEFAULT_PRICE = 20;            // price (BZ$) given to new products until you change it
-const DEPOSIT_RATE = 0.5;            // 50% deposit
+const DEPOSIT_RATE = 0.5;            // 50% non-refundable deposit
 const ADMIN_USER = "ADMIN";
 const ADMIN_HASH = "9935e45c0d69ac53211c3bd13cddd36691a1872a70082ba8d574aeb587de1a91"; // only used when Firebase is OFF
 const GOOGLE_CLIENT_ID = "";         // paste a Google OAuth Client ID to turn on the real Google button
@@ -472,15 +472,26 @@ const ready = (async () => {
 const find = id => products.find(p => p.id === id);
 const inStock = p => p.stock !== false;
 const saveLocal = () => store.set("products_admin", products);
+/* When the live database is still empty, the first save also publishes the starting products
+   so nothing disappears. */
+async function seedAll(exceptId){
+  if (!dbEmpty) return;
+  dbEmpty = false;
+  for (const b of clone(base)){
+    if (b.id === exceptId) continue;
+    await fbDb.collection("products").doc(b.id).set({name:b.name, price:Number(b.price), pic:b.pic, stock:b.stock !== false, sort:b.sort ?? 0});
+  }
+}
 async function persist(p){
   if (usingFB){
+    await seedAll(p.id);
     await fbDb.collection("products").doc(p.id).set({name:p.name, price:Number(p.price), pic:p.pic, stock:p.stock !== false, sort:p.sort ?? 0});
     return true;
   }
   return saveLocal();
 }
 async function removeProduct(id){
-  if (usingFB){ await fbDb.collection("products").doc(id).delete(); return true; }
+  if (usingFB){ await seedAll(id); await fbDb.collection("products").doc(id).delete(); return true; }
   return saveLocal();
 }
 
@@ -618,7 +629,7 @@ function drawCart(){
       <div class="p">${money(p.price * cart[k])}</div></div>`; }).join("") +
     `<div class="sub">Subtotal (${n} item${n>1?"s":""}): <b>${money(total())}</b></div></div>
      <div class="sum"><div class="tot">Subtotal (${n} item${n>1?"s":""}):<b>${money(total())}</b></div>
-       <div class="dep">50% deposit due to confirm: <b>${money(deposit())}</b></div>
+       <div class="dep">50% non-refundable deposit due: <b>${money(deposit())}</b></div>
        <button class="btn gold" id="goCo">Proceed to checkout</button></div>`;
 }
 function openCart(){ drawCart(); $("drawer").classList.add("open"); $("scrim").classList.add("open"); }
@@ -656,14 +667,14 @@ function openCheckout(){
          </select></div>
        <div class="field"><label for="needDate">Date needed (optional)</label><input id="needDate" type="date"></div>
        <div class="field"><label for="cnotes">Notes (optional)</label><textarea id="cnotes" maxlength="300" placeholder="Colors, names, sizes, custom requests"></textarea></div>
-       <div class="warn"><strong>IMPORTANT:</strong> A 50% deposit is required before any order can be confirmed.</div>
+       <div class="warn"><strong>IMPORTANT:</strong> A 50% non-refundable deposit is required to complete your order.</div>
        <table class="rl">${ks.map(k => `<tr><td>${esc(find(k).name)} &times; ${cart[k]}</td><td>${money(find(k).price*cart[k])}</td></tr>`).join("")}</table>
        <div class="rt"><span>Total</span><span>${money(total())}</span></div>
-       <div class="rt dep"><span>50% deposit due</span><span>${money(deposit())}</span></div>
+       <div class="rt dep"><span>50% non-refundable deposit due</span><span>${money(deposit())}</span></div>
        <div class="rt bal"><span>Balance at pickup / delivery</span><span>${money(total() - deposit())}</span></div></div>
      <div class="rf"><button class="btn gold" id="sendWa">Send order on WhatsApp</button>
        <button class="btn ghost" id="backCart" style="color:var(--pine);border-color:var(--pine)">Back to cart</button>
-       <p class="hint">Your receipt opens in WhatsApp. Your order is confirmed once the 50% deposit is received.</p></div>`;
+       <p class="hint">Your receipt opens in WhatsApp. Your order is confirmed once the 50% non-refundable deposit is received.</p></div>`;
   $("co").classList.add("open"); $("drawer").classList.remove("open"); $("scrim").classList.remove("open");
   $("cname").focus();
 }
@@ -681,10 +692,10 @@ $("rc").addEventListener("click", e => {
     const dt = $("needDate").value, notes = $("cnotes").value.trim();
     const msg = `*${SHOP} - Order Receipt*\nReceipt #: ${receiptNo}\nDate: ${new Date().toLocaleString()}\nName: ${nm}${em ? "\nEmail: " + em : ""}\nPickup/Delivery: ${delivery}${dt ? "\nDate needed: " + dt : ""}${notes ? "\nNotes: " + notes : ""}\n\n*Items*\n` +
       ks.map((k,i) => `${i+1}. ${find(k).name} x${cart[k]} - ${money(find(k).price*cart[k])}`).join("\n") +
-      `\n\n*Total: ${money(total())}*\n*50% deposit due: ${money(deposit())}*\nBalance at pickup/delivery: ${money(total() - deposit())}\n\nI understand a 50% deposit is required before my order is confirmed. Please confirm my order. Thank you!`;
+      `\n\n*Total: ${money(total())}*\n*50% non-refundable deposit due: ${money(deposit())}*\nBalance at pickup/delivery: ${money(total() - deposit())}\n\nI understand a 50% non-refundable deposit is required to complete my order. Please confirm my order. Thank you!`;
     window.open(wa(msg), "_blank");
     cart = {}; saveCart(); updCount();
-    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${esc(nm)}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish. Your order is confirmed once the 50% deposit is received.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
+    $("rc").innerHTML = `<div class="thanks"><img src="logo.jpeg" alt="" style="width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);margin:0 auto 12px"><h3>Order sent</h3><p>Thank you, ${esc(nm)}! Your receipt ${receiptNo} was opened in WhatsApp. Press send there to finish. Your order is confirmed once the 50% non-refundable deposit is received.</p><button class="btn" id="doneBtn" style="margin-top:18px">Back to shop</button></div>`;
   }
   if (b.id === "doneBtn") closeAll();
 });
@@ -847,6 +858,160 @@ document.addEventListener("keydown", e => {
 });
 
 if (session) enter();
+</script>
+
+<script>
+/* ====== DEADLINES, AUTO-LOCK (owner can unlock) AND CUSTOM ARRANGEMENTS ====== */
+(() => {
+  /* EDIT DATES HERE (Belize time, UTC-6) */
+  const REG = new Date("2026-12-15T23:59:59-06:00"), REG_TXT = "December 15, 2026";
+  const CUS = new Date("2026-12-10T23:59:59-06:00"), CUS_TXT = "December 10, 2026";
+
+  let st = store.get("shop_settings") || {regular: "auto", custom: "auto"}, go = false, resolveS;
+  const settingsReady = new Promise(r => resolveS = r);
+  setTimeout(resolveS, 4000);
+  const locked = k => st[k] === "closed" || (st[k] !== "open" && Date.now() > (k === "regular" ? REG : CUS).getTime());
+
+  /* styles */
+  const css = document.createElement("style");
+  css.textContent = `
+  #lockBanner{background:#fdecee;border:1.5px solid var(--berry);color:#7a1420;border-radius:10px;padding:12px 14px;font-weight:600;font-size:.95rem;margin:0 0 16px;text-align:left}
+  .dnote{font-size:.85rem;color:var(--muted);margin:-12px 0 18px}
+  .dstrip{background:#fff3cf;border-block:1px solid var(--gold);color:#3a2e08;text-align:center;padding:10px 4%;font-weight:600;font-size:.95rem}
+  #custom{background:#fff;border-block:1px solid var(--line)}
+  .cubox{background:var(--snow);border:1px solid var(--line);border-top:4px solid var(--berry);border-radius:14px;padding:26px;display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .cubox p{margin:0;color:var(--muted);flex:1 1 280px}
+  #lockStatus{font-size:.85rem}`;
+  document.head.appendChild(css);
+
+  /* login page: banner + deadline note */
+  const banner = document.createElement("div");
+  banner.id = "lockBanner"; banner.hidden = true;
+  $("lf").before(banner);
+  const dn = document.createElement("p");
+  dn.className = "dnote";
+  dn.textContent = `Regular orders close ${REG_TXT} \u00b7 Custom orders close ${CUS_TXT}`;
+  document.querySelector("#login .sub").after(dn);
+
+  /* site: deadline strip, nav link, custom section, modal, owner buttons */
+  const strip = document.createElement("div");
+  strip.className = "dstrip";
+  strip.textContent = `Order deadlines: regular orders close ${REG_TXT} \u00b7 custom arrangements close ${CUS_TXT} \u00b7 50% non-refundable deposit required to complete every order`;
+  $("collection").before(strip);
+
+  const nl = document.createElement("a");
+  nl.href = "#custom"; nl.textContent = "Custom";
+  nl.onclick = () => { $("nav").classList.remove("open"); $("menuBtn").setAttribute("aria-expanded", "false"); };
+  document.querySelector('#nav a[href="#contact"]').before(nl);
+
+  $("about").insertAdjacentHTML("beforebegin",
+    `<section id="custom"><div class="wrap">
+       <div class="head"><h2>Custom arrangements</h2><p>Want something made just for you? Tell us your colors, theme and size and we will quote it. Custom orders must be placed by ${CUS_TXT}.</p></div>
+       <div class="cubox"><p id="cuStatus"></p><button class="btn gold" id="cuOpen">Request a custom arrangement</button></div>
+     </div></section>`);
+  $("app").insertAdjacentHTML("beforeend",
+    '<div class="modal" id="cu" role="dialog" aria-modal="true" aria-label="Custom arrangement request"><div class="rc" id="cuc"></div></div>');
+  $("adminbar").insertAdjacentHTML("beforeend",
+    '<span id="lockStatus"></span><button id="lockReg"></button><button id="lockCus"></button>');
+
+  /* paint current lock state */
+  function paint(){
+    const L = locked("regular"), C = locked("custom");
+    $("lockBanner").hidden = !L;
+    $("lockBanner").textContent = Date.now() > REG.getTime() && st.regular !== "closed"
+      ? `Orders are now closed. Our Christmas order deadline (${REG_TXT}) has passed. Thank you for your support and Merry Christmas!`
+      : "Ordering is temporarily closed. Please check back soon.";
+    $("lockStatus").textContent = `Regular: ${L ? "LOCKED" : "OPEN"} \u00b7 Custom: ${C ? "LOCKED" : "OPEN"}`;
+    $("lockReg").textContent = L ? "\ud83d\udd13 Unlock regular orders" : "\ud83d\udd12 Lock regular orders";
+    $("lockCus").textContent = C ? "\ud83d\udd13 Unlock custom orders" : "\ud83d\udd12 Lock custom orders";
+    $("cuStatus").textContent = C
+      ? "Custom arrangement requests are closed right now. Message us on WhatsApp if you have a question."
+      : `Custom arrangement requests are open until ${CUS_TXT}.`;
+    $("cuOpen").disabled = C;
+  }
+  function kick(){
+    if (!go || !locked("regular") || isAdmin() || !session) return;
+    session = null; store.set("session", null);
+    stopLive(); closeAll(); $("app").hidden = true; $("login").hidden = false;
+  }
+
+  /* owner lock / unlock */
+  async function setMode(k, m){
+    const prev = st[k]; st[k] = m;
+    if (usingFB){
+      try{ await fbDb.collection("settings").doc("shop").set(st); }
+      catch(e){ st[k] = prev; return toast("Could not save. Add the settings rule in Firebase."); }
+    }
+    store.set("shop_settings", st);
+    paint();
+    toast((k === "regular" ? "Regular" : "Custom") + " orders " + (m === "open" ? "unlocked" : "locked"));
+  }
+  $("lockReg").onclick = () => setMode("regular", locked("regular") ? "open" : "closed");
+  $("lockCus").onclick = () => setMode("custom", locked("custom") ? "open" : "closed");
+
+  /* custom arrangement request */
+  $("cuOpen").onclick = () => {
+    if (locked("custom")) return toast("Custom requests are closed.");
+    $("cuc").innerHTML =
+      `<div class="rh"><img src="logo.jpeg" alt=""><h3>Custom arrangement request</h3><small>Deadline: ${CUS_TXT}</small></div>
+       <div class="rb">
+         <div class="warn"><strong>IMPORTANT:</strong> A 50% non-refundable deposit is required to complete every order. Custom orders must be placed by ${CUS_TXT}.</div>
+         <div class="field"><label for="cuName">Your name</label><input id="cuName" autocomplete="name"></div>
+         <div class="field"><label for="cuDesc">Describe your arrangement</label><textarea id="cuDesc" maxlength="600" placeholder="Theme, colors, size, names, anything we should know"></textarea></div>
+         <div class="field"><label for="cuDate">Date needed (optional)</label><input id="cuDate" type="date"></div>
+         <div class="field"><label for="cuBudget">Budget in BZ$ (optional)</label><input id="cuBudget" inputmode="decimal"></div>
+       </div>
+       <div class="rf"><button class="btn gold" id="cuSend">Send request on WhatsApp</button>
+         <button class="btn ghost" id="cuCancel" style="color:var(--pine);border-color:var(--pine)">Cancel</button>
+         <p class="hint">We reply with a quote on WhatsApp. Your order is confirmed once the 50% non-refundable deposit is received.</p></div>`;
+    $("cu").classList.add("open"); $("cuName").focus();
+  };
+  $("cuc").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.id === "cuCancel" || b.id === "cuDone") $("cu").classList.remove("open");
+    if (b.id !== "cuSend") return;
+    if (locked("custom")){ $("cu").classList.remove("open"); paint(); return toast("Custom requests are closed."); }
+    const nm = $("cuName").value.trim(), ds = $("cuDesc").value.trim();
+    if (!nm){ $("cuName").focus(); return toast("Please enter your name"); }
+    if (!ds){ $("cuDesc").focus(); return toast("Please describe your arrangement"); }
+    const dt = $("cuDate").value, bg = $("cuBudget").value.trim();
+    const em = session && session.role !== "admin" ? session.email : "";
+    const msg = `*${SHOP} - Custom Arrangement Request*\nName: ${nm}${em ? "\nEmail: " + em : ""}${dt ? "\nDate needed: " + dt : ""}${bg ? "\nBudget: BZ$" + bg : ""}\n\n*Details*\n${ds}\n\nCustom order deadline: ${CUS_TXT}\nI understand a 50% non-refundable deposit is required to complete my order. Please send me a quote. Thank you!`;
+    window.open(wa(msg), "_blank");
+    $("cuc").innerHTML = `<div class="thanks"><h3>Request sent</h3><p>Thank you, ${esc(nm)}! Press send in WhatsApp to finish. We will reply with a quote.</p><button class="btn" id="cuDone" style="margin-top:18px">Close</button></div>`;
+  });
+
+  /* hook into the existing site */
+  const _enter = enter, _closeAll = closeAll, _openCheckout = openCheckout;
+  enter = async function(){
+    await ready; await settingsReady;
+    if (locked("regular") && !isAdmin()){
+      session = null; store.set("session", null); paint();
+      err("Orders are closed. Thank you for your support!");
+      return;
+    }
+    return _enter();
+  };
+  closeAll = function(){ _closeAll(); $("cu").classList.remove("open"); };
+  openCheckout = function(){
+    if (locked("regular") && !isAdmin()){ kick(); return; }
+    _openCheckout();
+  };
+
+  /* start */
+  paint();
+  ready.then(() => {
+    go = true;
+    if (usingFB){
+      fbDb.collection("settings").doc("shop").onSnapshot(d => {
+        if (d.exists) st = Object.assign({regular: "auto", custom: "auto"}, d.data());
+        resolveS(); paint(); kick();
+      }, () => { resolveS(); });
+    } else resolveS();
+    paint(); kick();
+  });
+  setInterval(() => { if (go){ paint(); kick(); } }, 30000);
+})();
 </script>
 </body>
 </html>
